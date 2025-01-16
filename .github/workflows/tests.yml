@@ -8,7 +8,6 @@ env:
   image-name: ubuntu/jre:test
   build-image-name: ubuntu/jre:test-builder
   maven-image-name: ubuntu/jre:test-maven
-  maven-image-base: maven:3.9.9-eclipse-temurin-21
 
 jobs:
   build:
@@ -55,34 +54,14 @@ jobs:
           restore-keys: |
             tests-petclinic-test-spring-petclinic
 
-      - name: Build the jre image
+      - name: Build Test images
         run: |
-          set -ex
-          cd jre/ubuntu-24.04-headless
-          rockcraft pack --build-for amd64
-          rockcraft.skopeo copy oci-archive:jre_21-edge_${{ matrix.arch }}.rock docker-daemon:${{ env.image-name }}
-
-      - name: Build the JDK docker image
-        run: |
-          docker build \
-          -t ${{ env.build-image-name }} \
-          --build-arg ARCH=${{ matrix.arch }} \
-          --build-arg UID=$(id -u ${USER}) \
-          --build-arg GID=$(id -g ${USER}) \
-          -f tests/containers/builder/Dockerfile.${{ matrix.ubuntu-release }} \
-          tests/containers/builder
-
-      - name: Build Maven docker image
-        run: |
-          docker build \
-          -t ${{ env.maven-image-name }} \
-          --build-arg ARCH=${{ matrix.arch }} \
-          --build-arg UID=$(id -u ${USER}) \
-          --build-arg GID=$(id -g ${USER}) \
-          --build-arg BASE_IMAGE=${{ env.image-name }} \
-          --build-arg MAVEN_IMAGE=${{ env.maven-image-base }} \
-          -f tests/containers/maven/Dockerfile.${{ matrix.ubuntu-release }} \
-          tests/containers/maven
+          ./tests/build-test-images.sh ${{ matrix.arch }} \
+            ${{ env.image-name }} \
+            ${{ env.build-image-name }} \
+            ${{ env.maven-image-name }} \
+            ${{ env.maven-image-base }} \
+            ${{ matrix.ubuntu-release }}
 
       - name: Build benchmark docker images
         run: |
