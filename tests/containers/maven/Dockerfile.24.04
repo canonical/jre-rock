@@ -33,9 +33,5 @@ ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-$ARCH
 COPY --from=jdk /opt/java/bin/javac  /usr/lib/jvm/java-21-openjdk-$ARCH/bin
 # compatibility signatures
 COPY --from=jdk /opt/java/lib/ct.sym /usr/lib/jvm/java-21-openjdk-$ARCH/lib
-# additional jars
-COPY --from=jdk /opt/java/lib/*.jar  /usr/lib/jvm/java-21-openjdk-$ARCH/lib
-# copy modules
-COPY --from=jdk /opt/java/lib/modules /usr/lib/jvm/java-21-openjdk-$ARCH/lib
 
 ENTRYPOINT [ "/usr/share/maven/bin/mvn" ]
