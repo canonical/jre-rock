@@ -1,7 +1,0 @@
-name: jre
-version: 17
-base: 22.04
-platforms:
-  amd64:
-  arm64:
-    build-on: [amd64]
