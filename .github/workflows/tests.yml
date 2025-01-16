@@ -8,6 +8,7 @@ env:
   image-name: ubuntu/jre:test
   build-image-name: ubuntu/jre:test-builder
   maven-image-name: ubuntu/jre:test-maven
+  maven-image-base: maven:3.9.9-eclipse-temurin-21
 
 jobs:
   build:
