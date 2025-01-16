@@ -7,6 +7,9 @@ platforms:
   arm64:
     build-on: [ amd64 ]
 
+environment:
+  JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
+
 summary: OpenJDK 21 headless runtime environment
 description: |
   This rock provides OpenJDK 21 runtime environment including the following modules:
