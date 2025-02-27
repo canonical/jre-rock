@@ -97,4 +97,6 @@ parts:
 
       cd ${CRAFT_PART_INSTALL}
       mkdir -p usr/bin
-      ln -s --relative ${JAVA_HOME}/bin/java usr/bin/
+      for tool in java jfr jrunscript jwebserver keytool rmiregistry; do
+        ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
+      done
