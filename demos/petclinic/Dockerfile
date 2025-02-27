@@ -12,8 +12,7 @@ FROM ubuntu:noble-20250127 AS builder
 ENV PETCLINIC_TAG=${PETCLINIC_TAG:-6328d2c}
 ENV PETCLINIC_REPO=${PETCLINIC_REPO:-https://github.com/spring-projects/spring-petclinic}
 
-RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y git \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -U -y git \
         default-jdk-headless
 
 RUN git clone $PETCLINIC_REPO
