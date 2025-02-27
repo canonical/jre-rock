@@ -12,50 +12,69 @@ environment:
 
 summary: OpenJDK 21 headless runtime environment
 description: |
-  This rock provides OpenJDK 21 runtime environment including the following modules:
-   - java.base
-   - java.instrument
-   - java.logging,java.management
-   - java.management.rmi
-   - java.naming
-   - java.prefs
-   - java.rmi
-   - java.security.sasl
-   - java.xml,
-   - jdk.internal.vm.ci
-   - jdk.jfr,jdk.management
-   - jdk.management.jfr
-   - jdk.management.agent
-   - jdk.net
-   - jdk.nio.mapmode
-   - jdk.sctp
-   - jdk.unsupported
-   - jdk.naming.rmi
-   - java.se
-   - java.net.http
-   - java.scripting
-   - java.security.jgss
-   - java.smartcardio
-   - java.sql
-   - java.sql.rowset
-   - java.transaction.xa
-   - java.xml.crypto
-   - jdk.charsets
-   - jdk.crypto.cryptoki
-   - jdk.crypto.ec
-   - jdk.dynalink
-   - jdk.httpserver
-   - jdk.jsobject
-   - jdk.localedata
-   - jdk.naming.dns
-   - jdk.security.auth
-   - jdk.security.jgss
-   - jdk.xml.dom
-   - jdk.zipfs
-   - java.compiler
-   - jdk.internal.vm.compiler
-   - jdk.internal.vm.compiler.management
-   - jdk.jdwp.agent
+  This rock provides OpenJDK 21 runtime environment including the
+  following public modules:
+  - java.base - the foundational APIs of the Java SE Platform.
+   - java.compiler - the Language Model, Annotation Processing,
+     and Java Compiler APIs.
+   - java.instrument - services that allow agents to instrument
+     programs running on the JVM.
+   - java.logging - the Java Logging API.
+   - java.management.rmi - the RMI connector for the Java Management
+     Extensions (JMX) Remote API.
+   - java.management - the Java Management Extensions (JMX) API.
+   - java.naming - the Java Naming and Directory Interface (JNDI) API.
+   - java.net.http - the HTTP Client and WebSocket APIs.
+   - java.prefs - the Preferences API.
+   - java.rmi - the Remote Method Invocation (RMI) API.
+   - java.scripting - the Scripting API.
+   - java.security.jgss - the Java binding of the IETF Generic
+     Security Services API (GSS-API).
+   - java.security.sasl - Java support for the IETF Simple
+     Authentication and Security Layer (SASL).
+   - java.se -  the API of the Java SE Platform.
+   - java.smartcardio - the Java Smart Card I/O API.
+   - java.sql.rowset - the JDBC RowSet API.
+   - java.sql - the JDBC API.
+   - java.transaction.xa - an API for supporting distributed
+     transactions in JDBC.
+   - java.xml.crypto - the API for XML cryptography.
+   - java.xml - the Java APIs for XML Processing (JAXP).
+   - jdk.charsets - the  charsets that are not in java.base
+     (mostly double byte and IBM charsets).
+   - jdk.crypto.cryptoki -the implementation of the SunPKCS11
+     security provider.
+   - jdk.crypto.ec - the implementation of the SunEC security
+     provider.
+   - jdk.dynalink - the API for dynamic linking of high-level
+     operations on objects.
+   - jdk.httpserver -  the JDK-specific HTTP server API, and provides
+     the jwebserver tool for running a minimal HTTP server.
+   - jdk.jdwp.agent - the implementation of the Java Debug Wire
+     Protocol (JDWP) agent.
+   - jdk.jfr - the API for JDK Flight Recorder.
+   - jdk.jsobject - the API for the JavaScript Object.
+   - jdk.localedata - the locale data for locales other than US
+     locale.
+   - jdk.management.agent - the JMX management agent.
+   - jdk.management - JDK-specific management interfaces for the JVM.
+   - jdk.management.jfr - the Management Interface for JDK Flight
+     Recorder.
+   - jdk.naming.dns - the implementation of the DNS Java Naming
+     provider.
+   - jdk.naming.rmi - the implementation of the RMI Java Naming
+     provider.
+   - jdk.net -  the JDK-specific Networking API.
+   - jdk.nio.mapmode - the JDK-specific file mapping modes.
+   - jdk.sctp - the JDK-specific API for SCTP.
+   - jdk.security.auth - the implementations of the
+     javax.security.auth.* interfaces and various authentication
+     modules.
+   - jdk.security.jgss - the  JDK extensions to the GSS-API and an
+     implementation of the SASL GSSAPI mechanism.
+   - jdk.xml.dom  - the subset of the W3C Document Object Model (DOM)
+     API that is not part of the Java SE API.
+   - jdk.zipfs - the implementation of the Zip file system provider.
 
 parts:
   dependencies:
