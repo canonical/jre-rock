@@ -94,7 +94,7 @@ parts:
       jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.jsobject,jdk.localedata,\
       jdk.naming.dns,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,\
       jdk.zipfs,java.compiler,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management,\
-      jdk.jdwp.agent --no-man-pages -G \
+      jdk.jdwp.agent --no-header-files --no-man-pages -G \
       --output ${CRAFT_PART_INSTALL}/${JAVA_HOME}
 
       cd ${CRAFT_PART_INSTALL}
