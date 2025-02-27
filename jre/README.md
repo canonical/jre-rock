@@ -104,7 +104,6 @@ Hello World!
 
 The example is available [here](../demos/helloworld/).
 
-
 ### Spring Petclinic
 
 An advanced example of deploying a Spring Boot application
