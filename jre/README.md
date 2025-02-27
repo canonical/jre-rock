@@ -1,7 +1,7 @@
 # Chiselled OpenJDK 21
 
 This directory contains the image recipes of Chiselled OpenJDK 21. These
-images are smaller in size, hence less prone to vulnerabilities. Know
+images are smaller in size and, therefore less prone to vulnerabilities. Know
 more about chisel [here](https://github.com/canonical/chisel).
 
 We currently have Chiselled OpenJDK 21 on Noble. See
@@ -26,7 +26,7 @@ $ rockcraft.skopeo copy \
  docker-daemon:ubuntu/jre:21_edge
 ```
 
-The image has `pebble enter` as entrypoint. [Learn about
+The image has `pebble enter` as the entrypoint. [Learn about
 Pebble](https://github.com/canonical/pebble).
 
 You can access the `java` with the following command:
@@ -37,7 +37,7 @@ Usage: java [options] <mainclass> [args...]
 ...
 ```
 
-The image supports following commands: `java`, `jfr`, `jrunscript`,
+The image supports the following commands: `java`, `jfr`, `jrunscript`,
 `jwebserver`, `keytool`, `rmiregistry`.
 
 ### Building and running an application on Chiselled OpenJDK 21 runtime
@@ -54,7 +54,7 @@ public class HelloWorld {
 ```
 
 The OpenJDK runtime image does not include the `javac` compiler,
-so you will need to compile your class first. You may create the
+so you should compile your class first. You may create the
 following Dockerfile for your application image:
 
 ```Dockerfile
@@ -88,7 +88,7 @@ Hello World!
 
 ### Running a simple Java application without building another image
 
-Let's assume the previous hello world example file is in the current
+Let's assume the previous Hello World example file is in the current
 directory and was compiled:
 ```sh
 javac HelloWorld.java -d .
