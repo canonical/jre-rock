@@ -40,9 +40,11 @@ jobs:
           snap install rockcraft --classic
 
       - name: Setup yamllint
+        run: |
           apt-get install -U -y yamllint
 
       - name: Lint rockcraft.yaml
+        run: |
           find . -name rockcraft.yaml -exec yamllint {} \;
 
 
