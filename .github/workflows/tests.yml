@@ -36,8 +36,15 @@ jobs:
       - name: Setup rockcraft
         run: |
           rm -rf /home/runner/.local/state/rockcraft/log/*
-          sudo snap remove rockcraft || true
-          sudo snap install rockcraft --classic
+          snap remove rockcraft || true
+          snap install rockcraft --classic
+
+      - name: Setup yamllint
+          apt-get install -U -y yamllint
+
+      - name: Lint rockcraft.yaml
+          find . -name rockcraft.yaml -exec yamllint {} \;
+
 
       - name: Tests Maven cache
         uses: actions/cache@v4
@@ -63,10 +70,6 @@ jobs:
             ${{ env.maven-image-name }} \
             ${{ env.maven-image-base }} \
             ${{ matrix.ubuntu-release }}
-
-      - name: Build benchmark docker images
-        run: |
-          cd benchmark && make
 
       - name: Run Tests
         working-directory: ${{ github.workspace }}/tests/
@@ -101,8 +104,9 @@ jobs:
       - name: Setup rockcraft
         run: |
           rm -rf /home/runner/.local/state/rockcraft/log/*
-          sudo snap remove rockcraft || true
-          sudo snap install rockcraft --classic
+          snap remove rockcraft || true
+          snap install rockcraft --classic
+          sudo apt install yamllint
 
       - name: Build the jre image
         run: |
