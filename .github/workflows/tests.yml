@@ -45,8 +45,7 @@ jobs:
 
       - name: Lint rockcraft.yaml
         run: |
-          find . -name rockcraft.yaml -exec yamllint {} \;
-
+          yamllint ./jre/ubuntu-24.04-headless/rockcraft.yaml
 
       - name: Tests Maven cache
         uses: actions/cache@v4
