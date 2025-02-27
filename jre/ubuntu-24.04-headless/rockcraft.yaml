@@ -10,6 +10,8 @@ platforms:
 environment:
   JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
 
+run-user: _daemon_
+
 summary: OpenJDK 21 headless runtime environment
 description: |
   This rock provides OpenJDK 21 runtime environment including the following modules:
@@ -70,10 +72,6 @@ parts:
       - zlib1g_libs
       - libpcsclite1_libs
       - libnss3_libs
-    override-build: |
-      craftctl default
-      groupadd --root ${CRAFT_PART_INSTALL} app -g 10001
-      useradd -d /home/app -s /bin/bash --root ${CRAFT_PART_INSTALL} -g app -m -u 10001 app
 
   runtime:
     plugin: nil
