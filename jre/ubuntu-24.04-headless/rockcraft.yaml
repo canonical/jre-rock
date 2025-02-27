@@ -5,7 +5,7 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
-    build-on: [ amd64 ]
+    build-on: [amd64]
 
 environment:
   JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
