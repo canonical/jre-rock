@@ -5,7 +5,6 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
-    build-on: [ amd64 ]
 
 environment:
   JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
@@ -82,7 +81,7 @@ parts:
     override-build: |
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
-      jlink --add-modules java.base,java.instrument,\
+      /${JAVA_HOME}/bin/jlink --add-modules java.base,java.instrument,\
       java.logging,java.management,java.management.rmi,\
       java.naming,java.prefs,java.rmi,java.security.sasl,\
       java.xml,jdk.internal.vm.ci,\
