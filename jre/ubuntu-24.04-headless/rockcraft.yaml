@@ -42,40 +42,25 @@ description: |
   - java.xml - the Java APIs for XML Processing (JAXP).
   - java.xml.crypto - the API for XML cryptography.
   - jdk.aot
-  - jdk.attach
   - jdk.charsets - the  charsets that are not in java.base
     (mostly double byte and IBM charsets).
-  - jdk.compiler
   - jdk.crypto.cryptoki -the implementation of the SunPKCS11
     security provider.
   - jdk.crypto.ec - the implementation of the SunEC security
     provider.
   - jdk.dynalink - the API for dynamic linking of high-level
     operations on objects.
-  - jdk.editpad
-  - jdk.hotspot.agent
   - jdk.httpserver -  the JDK-specific HTTP server API, and provides
     the jwebserver tool for running a minimal HTTP server.
   - jdk.internal.ed
-  - jdk.internal.jvmstat
   - jdk.internal.le
-  - jdk.internal.opt
   - jdk.internal.vm.ci
   - jdk.internal.vm.compiler
   - jdk.internal.vm.compiler.management
-  - jdk.jartool
-  - jdk.javadoc
-  - jdk.jcmd
-  - jdk.jconsole
-  - jdk.jdeps
-  - jdk.jdi
   - jdk.jdwp.agent - the implementation of the Java Debug Wire
     Protocol (JDWP) agent.
   - jdk.jfr - the API for JDK Flight Recorder.
-  - jdk.jlink
-  - jdk.jshell
   - jdk.jsobject - the API for the JavaScript Object.
-  - jdk.jstatd
   - jdk.localedata - the locale data for locales other than US
     locale.
   - jdk.management - JDK-specific management interfaces for the JVM.
@@ -89,7 +74,6 @@ description: |
     provider.
   - jdk.net -  the JDK-specific Networking API.
   - jdk.pack
-  - jdk.rmic
   - jdk.scripting.nashorn
   - jdk.scripting.nashorn.shell
   - jdk.sctp - the JDK-specific API for SCTP.
@@ -142,34 +126,20 @@ parts:
       java.sql,java.sql.rowset,\
       java.transaction.xa,\
       java.xml,java.xml.crypto,\
-      jdk.aot,jdk.attach,\
+      jdk.aot,\
       jdk.charsets,\
-      jdk.compiler,\
       jdk.crypto.cryptoki,\
       jdk.crypto.ec,\
       jdk.dynalink,\
-      jdk.editpad,\
-      jdk.hotspot.agent,\
       jdk.httpserver,\
       jdk.internal.ed,\
-      jdk.internal.jvmstat,\
       jdk.internal.le,\
-      jdk.internal.opt,\
       jdk.internal.vm.ci,\
       jdk.internal.vm.compiler,\
       jdk.internal.vm.compiler.management,\
-      jdk.jartool,\
-      jdk.javadoc,\
-      jdk.jcmd,\
-      jdk.jconsole,\
-      jdk.jdeps,\
-      jdk.jdi,\
       jdk.jdwp.agent,\
       jdk.jfr,\
-      jdk.jlink,\
-      jdk.jshell,\
       jdk.jsobject,\
-      jdk.jstatd,\
       jdk.localedata,\
       jdk.management,\
       jdk.management.agent,\
@@ -179,7 +149,6 @@ parts:
       jdk.naming.rmi,\
       jdk.net,\
       jdk.pack,\
-      jdk.rmic,\
       jdk.scripting.nashorn,\
       jdk.scripting.nashorn.shell,\
       jdk.sctp,\
