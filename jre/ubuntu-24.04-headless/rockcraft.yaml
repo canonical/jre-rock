@@ -5,7 +5,6 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
-    build-on: [amd64]
 
 environment:
   JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
@@ -84,7 +83,7 @@ parts:
     override-build: |
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
-      jlink --add-modules java.base,java.instrument,\
+      /${JAVA_HOME}/bin/jlink --add-modules java.base,java.instrument,\
       java.logging,java.management,java.management.rmi,\
       java.naming,java.prefs,java.rmi,java.security.sasl,\
       java.xml,jdk.internal.vm.ci,\
@@ -96,9 +95,11 @@ parts:
       jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.jsobject,jdk.localedata,\
       jdk.naming.dns,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,\
       jdk.zipfs,java.compiler,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management,\
-      jdk.jdwp.agent --no-man-pages -G \
+      jdk.jdwp.agent --no-header-files --no-man-pages -G \
       --output ${CRAFT_PART_INSTALL}/${JAVA_HOME}
 
       cd ${CRAFT_PART_INSTALL}
       mkdir -p usr/bin
-      ln -s --relative ${JAVA_HOME}/bin/java usr/bin/
+      for tool in java jfr jrunscript jwebserver keytool rmiregistry; do
+        ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
+      done
