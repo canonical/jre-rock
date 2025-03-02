@@ -5,14 +5,15 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
-    build-on: [ amd64 ]
+    build-on: [amd64]
 
 environment:
   JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
 
 summary: OpenJDK 21 headless runtime environment
 description: |
-  This rock provides OpenJDK 21 runtime environment including the following modules:
+  This rock provides OpenJDK 21 runtime environment including the
+  following modules:
    - java.base
    - java.instrument
    - java.logging,java.management
@@ -73,7 +74,8 @@ parts:
     override-build: |
       craftctl default
       groupadd --root ${CRAFT_PART_INSTALL} app -g 10001
-      useradd -d /home/app -s /bin/bash --root ${CRAFT_PART_INSTALL} -g app -m -u 10001 app
+      useradd -d /home/app -s /bin/bash --root ${CRAFT_PART_INSTALL} \
+      -g app -m -u 10001 app
 
   runtime:
     plugin: nil
