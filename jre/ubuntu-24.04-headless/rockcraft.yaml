@@ -6,10 +6,10 @@ platforms:
   amd64:
   arm64:
 
-run-user: _daemon_
-
 environment:
   JAVA_HOME: /usr/lib/jvm/java-11-openjdk-${CRAFT_ARCH_BUILD_FOR}
+
+run-user: _daemon_
 
 summary: OpenJDK 11 headless runtime environment
 description: |
