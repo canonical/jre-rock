@@ -1,0 +1,11 @@
+summary: Spring Petclinic sample
+description: |
+  This image contains Spring Petclinic 
+  as a pebble service.
+
+services:
+  petclinic:
+    override: replace
+    command: /usr/bin/java -jar /spring-petclinic.jar
+    summary: Spring Petclinic
+    startup: enabled
