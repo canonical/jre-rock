@@ -151,3 +151,38 @@ parts:
       for tool in java jfr jrunscript jwebserver keytool rmiregistry; do
         ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
       done
+
+  security-manifest:
+    after:
+      - runtime
+      - dependencies
+    plugin: nil
+    source: .
+    build-packages:
+      - zstd
+      - jq
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/share/rocks/
+      FIELDS=(
+          '${db:Status-Abbrev}'
+          '${binary:Package}'
+          '${Version}'
+          '${source:Package}'
+          '${Source:Version}\n'
+        )
+      zstd -d -f -q $CRAFT_STAGE/var/lib/chisel/manifest.wall \
+        -o $CRAFT_PART_BUILD/manifest
+
+      # add openjdk-21 package
+      (
+        IFS="," && \
+        echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && \
+        dpkg-query -f "${FIELDS[*]}" \
+          -W openjdk-21-jdk-headless | head -n 1
+      ) > $CRAFT_PART_INSTALL/usr/share/rocks/dpkg.query
+      # add rest of the packages
+      jq -r 'select(.kind == "package") | "\(.name) \(.version)"' \
+        $CRAFT_PART_BUILD/manifest | \
+        awk -v arch=${CRAFT_ARCH_BUILD_FOR} -F' ' -f print-dpkg-query.awk \
+          >> $CRAFT_PART_INSTALL/usr/share/rocks/dpkg.query
+      craftctl default
