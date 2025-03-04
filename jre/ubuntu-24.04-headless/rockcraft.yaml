@@ -41,7 +41,7 @@ description: |
     transactions in JDBC.
   - java.xml - the Java APIs for XML Processing (JAXP).
   - java.xml.crypto - the API for XML cryptography.
-  - jdk.aot
+  - jdk.aot - experimental Ahead of Time compiler.
   - jdk.charsets - the  charsets that are not in java.base
     (mostly double byte and IBM charsets).
   - jdk.crypto.cryptoki -the implementation of the SunPKCS11
@@ -52,11 +52,6 @@ description: |
     operations on objects.
   - jdk.httpserver -  the JDK-specific HTTP server API, and provides
     the jwebserver tool for running a minimal HTTP server.
-  - jdk.internal.ed
-  - jdk.internal.le
-  - jdk.internal.vm.ci
-  - jdk.internal.vm.compiler
-  - jdk.internal.vm.compiler.management
   - jdk.jdwp.agent - the implementation of the Java Debug Wire
     Protocol (JDWP) agent.
   - jdk.jfr - the API for JDK Flight Recorder.
@@ -72,10 +67,11 @@ description: |
   - jdk.naming.ldap
   - jdk.naming.rmi - the implementation of the RMI Java Naming
     provider.
-  - jdk.net -  the JDK-specific Networking API.
-  - jdk.pack
-  - jdk.scripting.nashorn
-  - jdk.scripting.nashorn.shell
+  - jdk.net - the JDK-specific Networking API.
+  - jdk.pack - pack200 and unpack200 utilities.
+  - jdk.scripting.nashorn - Javascript engine.
+  - jdk.scripting.nashorn.shell - Unix shell scripting extension for
+    Javascript scripts.
   - jdk.sctp - the JDK-specific API for SCTP.
   - jdk.security.auth - the implementations of the
     javax.security.auth.* interfaces and various authentication
