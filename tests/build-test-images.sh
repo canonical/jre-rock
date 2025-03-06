@@ -3,21 +3,13 @@ set -e
 
 ARCH=${1:-amd64}
 BASE_IMAGE=${2:-ubuntu/jre:test}
-BUILD_IMAGE=${3:-ubuntu/jre:test-builder}
 MAVEN_IMAGE=${4:-ubuntu/jre:test-maven}
-MAVEN_BASE_IMAGE=${5:-maven:3.9.9-eclipse-temurin-21}
+MAVEN_BASE_IMAGE=${5:-maven:3.9.9-eclipse-temurin-11}
 RELEASE=${6:-24.04}
 
 (cd jre/ubuntu-${RELEASE}-headless && \
     rockcraft pack --build-for ${ARCH} && \
-    rockcraft.skopeo copy oci-archive:jre_21-edge_${ARCH}.rock docker-daemon:${BASE_IMAGE})
-
-docker build \
-    -t ${BUILD_IMAGE} \
-    --build-arg UID=$(id -u ${USER}) \
-    --build-arg GID=$(id -g ${USER}) \
-    -f tests/containers/builder/Dockerfile.${RELEASE} \
-    tests/containers/builder
+    rockcraft.skopeo copy oci-archive:jre_11-edge_${ARCH}.rock docker-daemon:${BASE_IMAGE})
 
 docker build \
     -t ${MAVEN_IMAGE} \
