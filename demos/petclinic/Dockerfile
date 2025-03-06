@@ -23,4 +23,4 @@ ADD 001-spring-petclinic.yaml /var/lib/pebble/default/layers/
 
 # copy petclinic sample
 COPY --chown=$UID:$GID --from=builder \
-    /spring-petclinic/target/spring-petclinic-3.4.0-SNAPSHOT.jar /spring-petclinic.jar
+    /spring-petclinic/target/spring-petclinic-2.7.3.jar /spring-petclinic.jar

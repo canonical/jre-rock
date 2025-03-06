@@ -1,6 +1,6 @@
 # Chiselled OpenJDK 11
 
-This directory contains the image recipes of Chiselled OpenJDK 21. These
+This directory contains the image recipes of Chiselled OpenJDK 11. These
 images are smaller in size and, therefore less prone to vulnerabilities. Know
 more about chisel [here](https://github.com/canonical/chisel).
 
@@ -40,7 +40,7 @@ Usage: java [options] <mainclass> [args...]
 The image supports the following commands: `java`, `jfr`, `jrunscript`,
 `jwebserver`, `keytool`, `rmiregistry`.
 
-### Building and running an application on Chiselled OpenJDK 21 runtime
+### Building and running an application on Chiselled OpenJDK 11 runtime
 
 Let's assume, you have the following Java source code you want to run
 as an application. Assume the file is called `HelloWorld.java`.
