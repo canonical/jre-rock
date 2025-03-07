@@ -1,10 +1,10 @@
-# Chiselled OpenJDK 21
+# Chiselled OpenJDK 21 runtime
 
-This directory contains the image recipes of Chiselled OpenJDK 21. These
+This directory contains the image recipes of Chiselled OpenJDK 21 runtime. These
 images are smaller in size and, therefore less prone to vulnerabilities. Know
 more about chisel [here](https://github.com/canonical/chisel).
 
-We currently have Chiselled OpenJDK 21 on Noble. See
+We currently have Chiselled OpenJDK 21 runtime on Noble. See
 [rockcraft.yaml](./ubuntu-24.04-headless/rockcraft.yaml).
 
 ### Building the image(s)

@@ -1,0 +1,53 @@
+name: jdk
+version: 21-edge
+base: bare
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+  arm64:
+
+environment:
+  JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
+
+run-user: _daemon_
+
+summary: OpenJDK 21 headless environment
+description: |
+  This rock provides OpenJDK 21
+parts:
+  runtime:
+    plugin: nil
+    stage-packages:
+      - openjdk-21-jdk-headless_standard
+      - openjdk-21-jdk-headless_modules
+      - openjdk-21-jdk-headless_headers
+      - openjdk-21-jdk-headless_debug-headers
+      - base-files_chisel
+    override-build: |
+      JAVA_HOME=/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
+      cd ${CRAFT_PART_INSTALL}
+      mkdir -p usr/bin
+      for tool in `ls ${CRAFT_PART_INSTALL}/${JAVA_HOME}/bin`; do
+        ln -sf --relative ${JAVA_HOME}/bin/${tool} usr/bin/
+      done
+      craftctl default
+
+  security-manifest:
+    after:
+      - runtime
+    plugin: nil
+    source: .
+    build-packages:
+      - zstd
+      - jq
+      - openjdk-21-jdk-headless # for security manifest
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/share/rocks/
+      zstd -d -f -q $CRAFT_STAGE/var/lib/chisel/manifest.wall \
+        -o $CRAFT_PART_BUILD/manifest
+
+      jq -r 'select(.kind == "package") | "\(.name) \(.version)"' \
+        $CRAFT_PART_BUILD/manifest | \
+        awk -v arch=${CRAFT_ARCH_BUILD_FOR} -F' ' -f print-dpkg-query.awk \
+          >> $CRAFT_PART_INSTALL/usr/share/rocks/dpkg.query
+      craftctl default

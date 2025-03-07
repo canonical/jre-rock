@@ -112,3 +112,8 @@ jobs:
         run: |
           cd jre/ubuntu-24.04-headless
           rockcraft pack
+
+      - name: Build the jdk image
+        run: |
+          cd jdk/ubuntu-24.04-headless
+          rockcraft pack
