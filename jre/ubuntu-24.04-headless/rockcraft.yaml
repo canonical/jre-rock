@@ -82,7 +82,6 @@ parts:
   dependencies:
     plugin: nil
     stage-packages:
-      - base-passwd_data
       - base-files_base
       - base-files_chisel
       - libc6_libs
