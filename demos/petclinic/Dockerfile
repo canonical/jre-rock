@@ -27,7 +27,7 @@ ARG GID
 USER $UID:$GID
 
 # add pebble layer definition
-ADD 001-spring-petclinic.yaml /var/lib/pebble/default/layers/
+COPY 001-spring-petclinic.yaml /var/lib/pebble/default/layers/
 
 # copy petclinic sample
 COPY --chown=$UID:$GID --from=builder \
