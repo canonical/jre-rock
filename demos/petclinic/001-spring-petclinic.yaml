@@ -1,6 +1,6 @@
 summary: Spring Petclinic sample
 description: |
-  This image contains Spring Petclinic 
+  This image contains Spring Petclinic
   as a pebble service.
 
 services:
@@ -9,3 +9,11 @@ services:
     command: /usr/bin/java -jar /spring-petclinic.jar
     summary: Spring Petclinic
     startup: enabled
+    on-check-failure:
+      check-petclinic: restart
+
+checks:
+  check-petclinic:
+    override: replace
+    http:
+      url: http://127.0.0.1:8080
