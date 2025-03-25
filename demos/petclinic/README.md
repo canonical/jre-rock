@@ -18,24 +18,18 @@ service manager. The sample configures a [health check](./001-spring-petclinic.y
 Run the container:
 
 ```bash
-
 docker run -d --name petclinic -p 8080:8080 --tmpfs /tmp:exec petclinic
-
 ```
 
 Check the service health:
 
 ```bash
-
 docker exec petclinic pebble checks
-
 ```
 
 This prints the status of the service:
 
 ```
-
 Check            Level  Status  Failures  Change
 check-petclinic  -      up      0/3       1
-
 ```
