@@ -9,7 +9,7 @@ export M2_CACHE=${3:-"$(pwd)/.m2"}
 export MAVEN_IMAGE=${4:-"ubuntu/jre:test-maven"}
 
 compile() {
-	javac -source 21 -target 21 $1 $2
+	javac -source 25 -target 25 $1 $2
 }
 
 run_container() {

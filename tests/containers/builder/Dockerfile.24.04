@@ -1,4 +1,4 @@
-ARG BUILD_IMAGE=eclipse-temurin:21.0.5_11-jdk-noble
+ARG BUILD_IMAGE=eclipse-temurin:25_36-jdk-noble
 ARG USER=app
 ARG UID=101
 ARG GROUP=app

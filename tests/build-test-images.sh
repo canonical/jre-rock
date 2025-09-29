@@ -1,9 +1,9 @@
 #!/bin/sh
-set -e 
+set -e
 
 (cd jre/ubuntu-24.04-headless && \
     rockcraft pack --build-for amd64 && \
-    rockcraft.skopeo copy oci-archive:jre_21-edge_amd64.rock docker-daemon:ubuntu/jre:test)
+    rockcraft.skopeo copy oci-archive:jre_25-edge_amd64.rock docker-daemon:ubuntu/jre:test)
 
 docker build \
     -t ubuntu/jre:test-builder \
@@ -18,6 +18,6 @@ docker build \
     --build-arg UID=$(id -u ${USER}) \
     --build-arg GID=$(id -g ${USER}) \
     --build-arg BASE_IMAGE=ubuntu/jre:test \
-    --build-arg MAVEN_IMAGE=maven:3.9.9-eclipse-temurin-21 \
+    --build-arg MAVEN_IMAGE=maven:3.9.11-eclipse-temurin-25 \
     -f tests/containers/maven/Dockerfile.24.04 \
     tests/containers/maven
