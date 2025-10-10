@@ -14,7 +14,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN jlink --no-header-files --no-man-pages --strip-debug \
-     --module-path /usr/lib/jvm/java-25-openjdk-$ARCH/jmods/ \
+    --module-path /usr/lib/jvm/java-25-openjdk-$ARCH/jmods/ \
     --add-modules ALL-MODULE-PATH --output /opt/java
 
 FROM $BASE_IMAGE
