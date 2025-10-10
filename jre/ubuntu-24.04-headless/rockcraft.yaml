@@ -5,11 +5,12 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
-    build-on: [ amd64 ]
+    build-on: [amd64]
 
 summary: OpenJDK 25 headless runtime environment
 description: |
-  This rock provides OpenJDK 25 runtime environment including the following modules:
+  This rock provides OpenJDK 25 runtime environment including
+  the following modules:
   - java.base
   - java.compiler
   - java.instrument
@@ -91,7 +92,8 @@ parts:
     override-build: |
       craftctl default
       groupadd --root ${CRAFT_PART_INSTALL} app -g 10001
-      useradd -d /home/app -s /bin/bash --root ${CRAFT_PART_INSTALL} -g app -m -u 10001 app
+      useradd -d /home/app -s /bin/bash --root ${CRAFT_PART_INSTALL}\
+        -g app -m -u 10001 app
 
   runtime:
     plugin: nil
@@ -193,5 +195,6 @@ parts:
           '${Source:Version}\n'
         )
       IFS="," dpkg-query -f "${FIELDS[*]}" \
-          -W openjdk-25-jdk-headless | head -n 1 >> ${CRAFT_PRIME}/usr/share/rocks/dpkg.query
+          -W openjdk-25-jdk-headless | head -n 1 \
+        >> ${CRAFT_PRIME}/usr/share/rocks/dpkg.query
       craftctl default
