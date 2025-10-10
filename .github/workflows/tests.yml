@@ -8,7 +8,7 @@ env:
   image-name: ubuntu/jre:test
   build-image-name: ubuntu/jre:test-builder
   maven-image-name: ubuntu/jre:test-maven
-  maven-image-base: maven:3.9.11-eclipse-temurin-25
+  maven-image-base: maven:3.9.9-eclipse-temurin-25
 
 jobs:
   build:
@@ -26,7 +26,26 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
-          java-version: '25'
+          java-version: '21'
+
+      - name: Setup LXD
+        uses: canonical/setup-lxd@main
+        with:
+          channel: 5.21/candidate
+
+      - name: Setup rockcraft
+        run: |
+          rm -rf /home/runner/.local/state/rockcraft/log/*
+          sudo snap remove rockcraft || true
+          sudo snap install rockcraft --classic
+
+      - name: Setup yamllint
+        run: |
+          sudo apt-get install -U -y yamllint
+
+      - name: Lint rockcraft.yaml
+        run: |
+          yamllint ./jre/ubuntu-24.04-headless/rockcraft.yaml
 
       - name: Tests Maven cache
         uses: actions/cache@v4
@@ -44,37 +63,14 @@ jobs:
           restore-keys: |
             tests-petclinic-test-spring-petclinic
 
-      - name: Build the jre image
+      - name: Build Test images
         run: |
-          cd jre/ubuntu-24.04-headless
-          rockcraft pack --build-for amd64
-          rockcraft.skopeo copy oci-archive:jre_25-edge_${{ arch }}.rock docker-daemon:${{ image-name }} \;
-
-      - name: Build the JDK docker image
-        run: |
-          docker build \
-          -t ${{ env.build-image-name }} \
-          --build-arg ARCH=${{ arch }}
-          --build-arg UID=$(id -u ${USER}) \
-          --build-arg GID=$(id -g ${USER}) \
-          -f tests/containers/builder/Dockerfile.${{ matrix.ubuntu-release }} \
-          tests/containers/builder
-
-      - name: Build Maven docker image
-        run: |
-          docker build \
-          -t ${{ env.maven-image-name }} \
-          --build-arg ARCH=${{ arch }}
-          --build-arg UID=$(id -u ${USER}) \
-          --build-arg GID=$(id -g ${USER}) \
-          --build-arg BASE_IMAGE=${{ env.image-name }} \
-          --build-arg MAVEN_IMAGE=${{ env.maven-image-base }} \
-          -f tests/containers/maven/Dockerfile.${{ matrix.ubuntu-release }} \
-          tests/containers/maven
-
-      - name: Build benchmark docker images
-        run: |
-          cd benchmark && make
+          ./tests/build-test-images.sh ${{ matrix.arch }} \
+            ${{ env.image-name }} \
+            ${{ env.build-image-name }} \
+            ${{ env.maven-image-name }} \
+            ${{ env.maven-image-base }} \
+            ${{ matrix.ubuntu-release }}
 
       - name: Run Tests
         working-directory: ${{ github.workspace }}/tests/
@@ -101,12 +97,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Lint the Dockerfiles
-      - name: Lint the Dockerfile
-        uses: hadolint/hadolint-action@v3.1.0
+      - name: Setup LXD
+        uses: canonical/setup-lxd@main
         with:
-          dockerfile: jre/Dockerfile.${{ matrix.ubuntu-release }}
-          ignore: DL3008,DL3015,SC3028
+          channel: 5.21/candidate
+
+      - name: Setup rockcraft
+        run: |
+          rm -rf /home/runner/.local/state/rockcraft/log/*
+          sudo snap remove rockcraft || true
+          sudo snap install rockcraft --classic
 
       - name: Build the jre image
         run: |
