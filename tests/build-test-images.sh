@@ -8,8 +8,9 @@ MAVEN_BASE_IMAGE=${5:-maven:3.9.9-eclipse-temurin-25}
 RELEASE=${6:-24.04}
 
 (cd jre/ubuntu-${RELEASE}-headless && \
+    rm -f *.rock && \
     rockcraft pack --build-for ${ARCH} && \
-    rockcraft.skopeo copy oci-archive:jre_11-edge_${ARCH}.rock docker-daemon:${BASE_IMAGE})
+    rockcraft.skopeo copy oci-archive:jre_*_${ARCH}.rock docker-daemon:${BASE_IMAGE})
 
 docker build \
     -t ${MAVEN_IMAGE} \
