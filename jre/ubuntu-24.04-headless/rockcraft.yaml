@@ -5,7 +5,6 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
-    build-on: [amd64]
 
 summary: OpenJDK 25 headless runtime environment
 description: |
