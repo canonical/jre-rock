@@ -96,12 +96,14 @@ parts:
 
   runtime:
     plugin: nil
-    build-packages:
-      - openjdk-25-jdk-headless
+#    build-packages:
+#      - openjdk-25-jdk-headless
     override-build: |
+      # Cannot find package listed in 'build-packages': openjdk-25-jdk-headless
+      apt-get update && apt-get install -y openjdk-25-jdk-headless
       JAVA_HOME=usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
-      jlink --add-modules \
+      /usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}/bin/jlink --add-modules \
       java.base,\
       java.compiler,\
       java.instrument,\
@@ -183,8 +185,6 @@ parts:
     source-type: git
     source-branch: main
     override-prime: |
-      # Cannot find package listed in 'build-packages': openjdk-25-jdk-headless
-      apt-get update && apt-get install -y openjdk-25-jdk-headless
       gen_manifest
       FIELDS=(
           '${db:Status-Abbrev}'
