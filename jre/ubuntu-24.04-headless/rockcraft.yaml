@@ -103,7 +103,8 @@ parts:
       apt-get update && apt-get install -y openjdk-25-jdk-headless
       JAVA_HOME=usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
-      /usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}/bin/jlink --add-modules \
+      /usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}/bin/jlink \
+      --add-modules \
       java.base,\
       java.compiler,\
       java.instrument,\
