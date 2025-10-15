@@ -1,0 +1,10 @@
+.m2
+*.zip
+*.tar.gz
+pdfbox-2.0.27
+?
+sh
+*.war
+*.jar
+.embedmongo
+*.class

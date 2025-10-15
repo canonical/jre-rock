@@ -1,4 +1,9 @@
-                                 Apache License
+THE DOCKERFILE AND OTHER SOURCES IN THIS PROJECT ARE LICENSED UNDER THE APACHE 2.0 LICENSE.
+**THIS IS NOT THE END-USER LICENSE FOR THE RESULTING CONTAINER IMAGE.**
+THE RESULTING IMAGE IS LICENSED UNDER THE [OPENJDK GPLv2 LICENSE WITH LINKING EXCEPTION](./chiselled-jre/LICENSE).
+
+
+                                Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
 
