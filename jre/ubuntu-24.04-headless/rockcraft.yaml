@@ -100,6 +100,7 @@ parts:
 #      - openjdk-25-jdk-headless
     override-build: |
       # Cannot find package listed in 'build-packages': openjdk-25-jdk-headless
+      # https://github.com/canonical/rockcraft/issues/1005
       apt-get update && apt-get install -y openjdk-25-jdk-headless
       JAVA_HOME=usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
