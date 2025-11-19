@@ -1,4 +1,4 @@
-project: tomcat9
+project: jre-17
 
 backends:
   craft:
