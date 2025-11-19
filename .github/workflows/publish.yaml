@@ -41,22 +41,22 @@ jobs:
   # - the Build-Rock wf may need an an environment setup that relies on an internal action
   #   - to call an internal action, the repo must also be internal/private
   #     - but the OCI Factory is not internal/private, so that internal action cannot be called from there
-  build-internal:
-    needs: [get-runners, read-config]
-    if: github.event.repository.visibility != 'public'
-    strategy:
-      fail-fast: true
-      matrix: ${{ fromJSON(needs.read-config.outputs.build-matrix) }}
-    uses: canonical/oci-factory-internal/.github/workflows/Build-Rock.yaml@main
-    with:
-      rock-repo: ${{ github.repository }}
-      rock-repo-commit: ${{ github.head_ref || github.ref }}
-      rockfile-directory: ${{ matrix.directory }}
-      oci-archive-name: ${{ matrix.artifact-name }}
-      arch-map: ${{ needs.get-runners.outputs.arch-map }}
-    secrets:
-      host-github-token: ${{ secrets.GITHUB_TOKEN }}
-      source-github-token: ${{ secrets.REPO_CLONER_TOKEN }}
+  # build-internal:
+  #  needs: [get-runners, read-config]
+  #  if: github.event.repository.visibility != 'public'
+  #  strategy:
+  #    fail-fast: true
+  #    matrix: ${{ fromJSON(needs.read-config.outputs.build-matrix) }}
+  #  uses: canonical/oci-factory-internal/.github/workflows/Build-Rock.yaml@main
+  #  with:
+  #    rock-repo: ${{ github.repository }}
+  #    rock-repo-commit: ${{ github.head_ref || github.ref }}
+  #    rockfile-directory: ${{ matrix.directory }}
+  #    oci-archive-name: ${{ matrix.artifact-name }}
+  #    arch-map: ${{ needs.get-runners.outputs.arch-map }}
+  #  secrets:
+  #    host-github-token: ${{ secrets.GITHUB_TOKEN }}
+  #    source-github-token: ${{ secrets.REPO_CLONER_TOKEN }}
 
   build:
     needs: [get-runners, read-config]
@@ -73,7 +73,7 @@ jobs:
       rockcraft-test: ${{ matrix.run-tests }}
 
   test:
-    needs: [read-config, build, build-internal]
+    needs: [read-config, build]
     if: |
       always() && needs.read-config.result == 'success' &&
       (needs.build-internal.result == 'success' && needs.build.result == 'skipped') ||
