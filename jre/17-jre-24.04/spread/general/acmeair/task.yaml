@@ -1,6 +1,0 @@
-summary: build and test AcmeAir application
-
-execute: |
-  export M2_CACHE="$(pwd)/.m2"
-  mkdir -p ${M2_CACHE}
-  ./runtest
