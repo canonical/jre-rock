@@ -1,0 +1,6 @@
+summary: build and run spring petclinic tests
+
+execute: |
+  export M2_CACHE=${3:-"$(pwd)/.m2"}
+  mkdir -p ${M2_CACHE}
+  ./runtest

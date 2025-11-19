@@ -1,0 +1,4 @@
+summary: build and run Hello World
+
+execute: |
+  ./runtest
