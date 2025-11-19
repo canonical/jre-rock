@@ -23,7 +23,7 @@ Import the recently created rock into Docker using
 ```sh
 $ rockcraft.skopeo copy \
  oci-archive:jre_17-edge_amd64.rock \
- docker-daemon:ubuntu/jre:11_edge
+ docker-daemon:ubuntu/jre:17_edge
 ```
 
 The image has `pebble enter` as the entrypoint. [Learn about
