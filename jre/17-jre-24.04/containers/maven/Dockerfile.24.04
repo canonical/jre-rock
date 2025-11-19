@@ -23,6 +23,7 @@ COPY --from=builder /bin/sh /bin/sh
 COPY --from=builder /usr/bin/chmod /usr/bin/chmod
 COPY --from=builder /usr/bin/uname /usr/bin/uname
 COPY --from=builder /usr/bin/dirname /usr/bin/dirname
+COPY --from=builder /usr/bin/grep /usr/bin/grep
 # note, Temurin base does not install into /etc/maven and /usr/share/java
 # other base might require copying those folders
 COPY --from=builder /usr/share/maven /usr/share/maven
