@@ -1,0 +1,48 @@
+project: jre-17
+
+backends:
+  craft:
+    type: craft
+    systems:
+      - ubuntu-24.04:
+
+suites:
+  spread/general/:
+    summary: General integration tests
+    environment:
+      BASE_IMAGE: ubuntu/jre:test
+      MAVEN_IMAGE: ubuntu/jre:test-maven
+      MAVEN_BASE_IMAGE: maven:3.9.9-eclipse-temurin-17
+      RELEASE: 24.04
+      ARCH: $(dpkg --print-architecture)
+    prepare: |
+      sudo snap install docker
+
+      # For 'rockcraft.skopeo'
+      sudo snap install --classic rockcraft
+      sudo apt install -y -u openjdk-17-jdk maven curl retry
+      # Wait for docker daemon to come online
+
+      retry --times=10 --delay 2 -- docker run hello-world
+
+      # Load the rock into docker
+      rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:${BASE_IMAGE}
+      PROJECT_ROOT="$(dirname $CRAFT_ARTIFACT)"
+      docker build \
+        -t ${MAVEN_IMAGE} \
+        --build-arg ARCH=${ARCH} \
+        --build-arg UID=$(id -u ${USER}) \
+        --build-arg GID=$(id -g ${USER}) \
+        --build-arg BASE_IMAGE=${BASE_IMAGE} \
+        --build-arg MAVEN_IMAGE=${MAVEN_BASE_IMAGE} \
+        -f ${PROJECT_ROOT}/containers/maven/Dockerfile.${RELEASE} \
+        ${PROJECT_ROOT}/containers/maven
+
+    restore: |
+      docker image rm --force ${BASE_IMAGE}
+
+
+exclude:
+  - .git
+
+kill-timeout: 1h

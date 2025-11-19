@@ -1,0 +1,9 @@
+#!/bin/bash
+set -ex
+
+echo "Running test for Java Hello World app"
+
+javac src/HelloWorld.java -d .
+
+docker run --rm -v $PWD:/app:ro \
+    -w /app $BASE_IMAGE exec java -cp /app HelloWorld

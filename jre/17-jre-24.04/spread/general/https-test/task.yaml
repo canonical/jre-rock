@@ -1,0 +1,4 @@
+summary: test that JRE can use SSL
+
+execute: |
+  ./runtest
