@@ -22,5 +22,5 @@ FROM $BASE_IMAGE
 COPY 001-spring-petclinic.yaml /var/lib/pebble/default/layers/
 
 # copy petclinic sample
-COPY --chown=$UID:$GID --from=builder \
+COPY --from=builder \
     /spring-petclinic/target/spring-petclinic-2.7.3.jar /spring-petclinic.jar
