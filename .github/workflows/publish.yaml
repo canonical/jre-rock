@@ -18,7 +18,7 @@ jobs:
       upload-matrix: ${{ steps.read-ci-config.outputs.upload-matrix }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Read .github/ci.yaml
         id: read-ci-config
