@@ -1,0 +1,30 @@
+summary: Build acmeair application and run self-tests
+
+environment:
+  MAVEN_IMAGE: maven:latest
+  M2_CACHE: /tmp/.m2
+  PROJECT: acmeair-monolithic-java
+  TAG: chiselled-demo-17
+  ACMEAIR_REPO: https://github.com/vpa1977/${PROJECT}
+
+prepare: |
+  docker build --build-arg BASE_IMAGE=${ROCK} -t ${MAVEN_IMAGE} . -f Dockerfile.26.04
+  git clone --branch ${TAG} ${ACMEAIR_REPO} && \
+    (cd ${PROJECT} && git checkout ${TAG} && \
+      mvn -Dmaven.repo.local="${M2_CACHE}" compile process-test-resources test-compile)
+
+execute: |
+  DOCKER_OPTS="--rm \
+    -u $(id -u ${USER}):$(id -g ${USER}) \
+    -v ${M2_CACHE}:${M2_CACHE} \
+    -v $(pwd):$(pwd) \
+    -w $(pwd)/${PROJECT}"
+  docker run \
+    ${DOCKER_OPTS} \
+    ${MAVEN_IMAGE} \
+      -X -e -Dmaven.repo.local="${M2_CACHE}" \
+      -Duser.home=$(pwd) \
+      surefire:test
+
+restore: |
+  rm -rf acmeair-monolithic-java

@@ -1,0 +1,41 @@
+project: jdk-21
+
+backends:
+  craft:
+    type: craft
+    systems:
+      - ubuntu-26.04:
+
+suites:
+  spread/general/:
+    environment:
+      ROCK: jre:latest
+      MAVEN: maven:latest
+      VERSION: 25.0
+      MAVEN_DOCKER: |
+
+    summary: General integration tests
+
+    prepare: |
+      sudo snap install docker
+
+      # For 'rockcraft.skopeo'
+      sudo snap install --classic rockcraft
+
+      # Wait for docker daemon to come online
+      sudo apt install --yes retry
+      retry --times=10 --delay 2 -- docker run hello-world
+      sudo apt remove --yes retry
+
+      # Load the rock into docker
+      sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:$ROCK
+      sudo apt-get install --yes openjdk-25-jdk-headless maven
+
+    restore: |
+      docker image rm --force jdk:latest
+      docker image rm --force maven:latest
+
+exclude:
+  - .git
+
+kill-timeout: 1h
