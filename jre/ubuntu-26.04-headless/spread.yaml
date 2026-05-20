@@ -10,10 +10,9 @@ backends:
 suites:
   spread/general/:
     environment:
+      MAVEN_IMAGE: maven:latest
       ROCK: jre:latest
-      MAVEN: maven:latest
       VERSION: 25.0
-      MAVEN_DOCKER: |
 
     summary: General integration tests
 
@@ -31,6 +30,12 @@ suites:
       # Load the rock into docker
       sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:$ROCK
       sudo apt-get install --yes openjdk-25-jdk-headless maven
+      PROJECT_ROOT="$(dirname $CRAFT_ARTIFACT)"
+      ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
+      docker build --build-arg ARCH=${ARCH} \
+        --build-arg BASE_IMAGE=${ROCK} -t ${MAVEN_IMAGE} \
+        ${PROJECT_ROOT}/containers -f Dockerfile.26.04
+
 
     restore: |
       docker image rm --force jdk:latest
