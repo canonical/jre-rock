@@ -2,4 +2,4 @@ summary: Hello world test
 
 execute: |
   javac src/HelloWorld.java -d .
-  docker run --rm -v `pwd`:/app ${ROCK} exec java -cp /app HelloWorld
+  docker run --rm -v "$(pwd)":/app ${ROCK} exec java -cp /app HelloWorld
