@@ -1,18 +1,18 @@
-# Chiselled OpenJDK 17
+# Chiselled OpenJDK 11
 
-This directory contains the image recipes of Chiselled OpenJDK 17. These
+This directory contains the image recipes of Chiselled OpenJDK 11. These
 images are smaller in size and, therefore less prone to vulnerabilities. Know
 more about chisel [here](https://github.com/canonical/chisel).
 
-We currently have Chiselled OpenJDK 17 on Noble. See
-[rockcraft.yaml](./17-jre-24.04/rockcraft.yaml).
+We currently have Chiselled OpenJDK 11 on Noble. See
+[rockcraft.yaml](./ubuntu-24.04-headless/rockcraft.yaml).
 
 ### Building the image(s)
 
 Build the rock in the usual way:
 
 ```sh
-cd 17-jre-24.04 && rockcraft pack
+cd ubuntu-24.04-headless && rockcraft pack
 ```
 
 ### Running the image(s)
@@ -22,8 +22,8 @@ Import the recently created rock into Docker using
 
 ```sh
 $ rockcraft.skopeo copy \
- oci-archive:jre_17-edge_amd64.rock \
- docker-daemon:ubuntu/jre:17_edge
+ oci-archive:jre_11-edge_amd64.rock \
+ docker-daemon:ubuntu/jre:11_edge
 ```
 
 The image has `pebble enter` as the entrypoint. [Learn about
@@ -32,15 +32,15 @@ Pebble](https://github.com/canonical/pebble).
 You can access the `java` with the following command:
 
 ```sh
-$ docker run --rm ubuntu/jre:17_edge exec java
+$ docker run --rm ubuntu/jre:11_edge exec java
 Usage: java [options] <mainclass> [args...]
 ...
 ```
 
 The image supports the following commands: `java`, `jfr`, `jrunscript`,
-`keytool`, `rmiregistry`.
+`jwebserver`, `keytool`, `rmiregistry`.
 
-### Building and running an application on Chiselled OpenJDK 17 runtime
+### Building and running an application on Chiselled OpenJDK 11 runtime
 
 Let's assume, you have the following Java source code you want to run
 as an application. Assume the file is called `HelloWorld.java`.
@@ -66,7 +66,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -U -y \
 ADD HelloWorld.java /
 RUN javac -d / /HelloWorld.java
 
-FROM ubuntu/jre:17_edge
+FROM ubuntu/jre:11_edge
 
 COPY --from=builder HelloWorld.class /
 
@@ -94,10 +94,10 @@ directory and was compiled:
 javac HelloWorld.java -d .
 ```
 
- You may run the application with the Chiselled JRE image as shown below:
+ You may run the application with the Chiselled Java image as shown below:
 
 ```sh
-docker run --rm -v `pwd`:/app ubuntu/jre:17_edge \
+docker run --rm -v `pwd`:/app ubuntu/jre:11_edge \
  exec java -cp /app HelloWorld
 Hello World!
 ```
