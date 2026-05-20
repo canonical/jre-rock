@@ -8,7 +8,8 @@ environment:
   PETCLINIC_REPO: https://github.com/vpa1977/${PROJECT}
 
 prepare: |
-  docker build --build-arg BASE_IMAGE=${ROCK} -t ${MAVEN_IMAGE} . -f Dockerfile.26.04
+  ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
+  docker build --build-arg ARCH=${ARCH} --build-arg BASE_IMAGE=${ROCK} -t ${MAVEN_IMAGE} . -f Dockerfile.26.04
   git clone --branch ${TAG} ${PETCLINIC_REPO} && \
     (cd ${PROJECT} && git checkout ${TAG} && \
     mvn -Dmaven.repo.local="${M2_CACHE}" compile process-test-resources test-compile)
