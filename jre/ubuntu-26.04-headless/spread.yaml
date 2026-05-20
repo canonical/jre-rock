@@ -1,4 +1,4 @@
-project: jre-26
+project: jre-25
 
 backends:
   craft:
