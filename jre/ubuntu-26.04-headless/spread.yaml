@@ -1,4 +1,4 @@
-project: jdk-21
+project: jre-26
 
 backends:
   craft:
@@ -23,9 +23,9 @@ suites:
       sudo snap install --classic rockcraft
 
       # Wait for docker daemon to come online
-      sudo apt install --yes retry
+      sudo apt-get install --yes retry
       retry --times=10 --delay 2 -- docker run hello-world
-      sudo apt remove --yes retry
+      sudo apt-get remove --yes retry
 
       # Load the rock into docker
       sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:$ROCK
