@@ -34,7 +34,8 @@ suites:
       ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
       docker build --build-arg ARCH=${ARCH} \
         --build-arg BASE_IMAGE=${ROCK} -t ${MAVEN_IMAGE} \
-        ${PROJECT_ROOT}/containers -f Dockerfile.26.04
+        ${PROJECT_ROOT}/containers \
+        -f ${PROJECT_ROOT}/containers/Dockerfile.26.04
 
 
     restore: |
