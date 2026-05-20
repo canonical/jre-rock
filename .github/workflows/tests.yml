@@ -3,6 +3,8 @@ name: "Chiselled Ubuntu 'jre' Tests"
 on:
   pull_request:
   push:
+    branches:
+      - main
 
 env:
   image-name: ubuntu/jre:test
