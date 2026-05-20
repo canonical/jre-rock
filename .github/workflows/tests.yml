@@ -39,9 +39,13 @@ jobs:
           sudo snap remove rockcraft || true
           sudo snap install rockcraft --classic --channel=edge
 
+      - name: Update apt
+        run: |
+          sudo apt-get update
+
       - name: Setup yamllint
         run: |
-          sudo apt-get install -U -y yamllint
+          sudo apt-get install -y yamllint
 
       - name: Lint rockcraft.yaml
         run: |
