@@ -1,0 +1,28 @@
+summary: Build spring-petclinic and run self-tests
+
+environment:
+  M2_CACHE: /tmp/.m2
+  PROJECT: spring-petclinic
+  TAG: spring-boot-2.7.3
+  PETCLINIC_REPO: https://github.com/vpa1977/${PROJECT}
+
+prepare: |
+  git clone --branch ${TAG} ${PETCLINIC_REPO} && \
+    (cd ${PROJECT} && git checkout ${TAG} && \
+    mvn -Dmaven.repo.local="${M2_CACHE}" compile process-test-resources test-compile)
+
+execute: |
+  DOCKER_OPTS="--rm \
+    -u $(id -u ${USER}):$(id -g ${USER}) \
+    -v ${M2_CACHE}:${M2_CACHE} \
+    -v $(pwd):$(pwd) \
+    -w $(pwd)/${PROJECT}"
+  docker run \
+    ${DOCKER_OPTS} \
+    ${MAVEN_IMAGE} \
+      -Dmaven.repo.local="${M2_CACHE}" \
+      -Duser.home=$(pwd) \
+      surefire:test
+
+restore: |
+  rm -rf spring-petclinic

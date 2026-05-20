@@ -161,17 +161,16 @@ parts:
         ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
       done
 
-  security-manifest:
+  deb-security-manifest:
+    plugin: make
     after:
       - runtime
       - dependencies
-    plugin: nil
-    source: .
-    build-packages:
-      - zstd
-      - jq
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/share/rocks/
+    source: https://github.com/canonical/rocks-security-manifest
+    source-type: git
+    source-branch: main
+    override-prime: |
+      gen_manifest
       FIELDS=(
           '${db:Status-Abbrev}'
           '${binary:Package}'
@@ -179,19 +178,8 @@ parts:
           '${source:Package}'
           '${Source:Version}\n'
         )
-      zstd -d -f -q $CRAFT_STAGE/var/lib/chisel/manifest.wall \
-        -o $CRAFT_PART_BUILD/manifest
-
-      # add openjdk-11 package
       (
-        IFS="," && \
-        echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && \
-        dpkg-query -f "${FIELDS[*]}" \
+        IFS="," dpkg-query -f "${FIELDS[*]}" \
           -W openjdk-11-jdk-headless | head -n 1
-      ) > $CRAFT_PART_INSTALL/usr/share/rocks/dpkg.query
-      # add rest of the packages
-      jq -r 'select(.kind == "package") | "\(.name) \(.version)"' \
-        $CRAFT_PART_BUILD/manifest | \
-        awk -v arch=${CRAFT_ARCH_BUILD_FOR} -F' ' -f print-dpkg-query.awk \
-          >> $CRAFT_PART_INSTALL/usr/share/rocks/dpkg.query
+      ) >> ${CRAFT_PRIME}/usr/share/rocks/dpkg.query
       craftctl default
