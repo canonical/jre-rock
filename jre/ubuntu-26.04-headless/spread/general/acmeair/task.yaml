@@ -3,7 +3,7 @@ summary: Build acmeair application and run self-tests
 environment:
   M2_CACHE: /tmp/.m2
   PROJECT: acmeair-monolithic-java
-  TAG: chiselled-demo-17
+  TAG: chiselled-demo-25
   ACMEAIR_REPO: https://github.com/vpa1977/${PROJECT}
 
 prepare: |
