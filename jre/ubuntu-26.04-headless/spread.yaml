@@ -39,8 +39,9 @@ suites:
 
 
     restore: |
-      docker image rm --force jdk:latest
-      docker image rm --force maven:latest
+      docker image rm --force ${ROCK}
+
+      docker image rm --force ${MAVEN_IMAGE}
 
 exclude:
   - .git
