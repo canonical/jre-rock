@@ -37,7 +37,7 @@ jobs:
         run: |
           rm -rf /home/runner/.local/state/rockcraft/log/*
           sudo snap remove rockcraft || true
-          sudo snap install rockcraft --classic
+          sudo snap install rockcraft --classic --channel=edge
 
       - name: Setup yamllint
         run: |
@@ -45,40 +45,13 @@ jobs:
 
       - name: Lint rockcraft.yaml
         run: |
-          yamllint ./jre/ubuntu-24.04-headless/rockcraft.yaml
-
-      - name: Tests Maven cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Tests Petclinic
-        uses: actions/cache@v4
-        with:
-          path: tests/petclinic-test/spring-petclinic
-          key: tests-petclinic-test-spring-petclinic
-          restore-keys: |
-            tests-petclinic-test-spring-petclinic
-
-      - name: Build Test images
-        run: |
-          ./tests/build-test-images.sh ${{ matrix.arch }} \
-            ${{ env.image-name }} \
-            ${{ env.build-image-name }} \
-            ${{ env.maven-image-name }} \
-            ${{ env.maven-image-base }} \
-            ${{ matrix.ubuntu-release }}
+          yamllint ./jre/ubuntu-26.04-headless/rockcraft.yaml
 
       - name: Run Tests
-        working-directory: ${{ github.workspace }}/tests/
+        working-directory: jre/ubuntu-26.04-headless
         run: |
-          ./run-all-tests ${{ env.image-name }} \
-                          ${{ env.build-image-name }} \
-                          ${{ runner.temp }}/.m2 \
-                          ${{ env.maven-image-name }}
+          rockcraft test
+
   multi-arch-build:
     runs-on: ubuntu-24.04
     name: Multi Architecture Build
@@ -106,9 +79,9 @@ jobs:
         run: |
           rm -rf /home/runner/.local/state/rockcraft/log/*
           sudo snap remove rockcraft || true
-          sudo snap install rockcraft --classic
+          sudo snap install rockcraft --classic --channel edge
 
       - name: Build the jre image
+        working-directory: jre/ubuntu-26.04-headless
         run: |
-          cd jre/ubuntu-24.04-headless
           rockcraft pack
