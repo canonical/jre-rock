@@ -6,7 +6,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -U -y \
 ADD HelloWorld.java /
 RUN javac -d / /HelloWorld.java
 
-FROM ubuntu/jre:11_edge
+FROM ubuntu/jre:11-24.04_edge
 
 COPY --from=builder HelloWorld.class /
 

@@ -1,7 +1,7 @@
 ARG PETCLINIC_REPO
 ARG PETCLINIC_TAG
 
-ARG BASE_IMAGE=ubuntu/jre:17_edge
+ARG BASE_IMAGE=ubuntu/jre:17-24.04_edge
 
 
 FROM ubuntu:noble-20250127 AS builder
@@ -22,5 +22,5 @@ FROM $BASE_IMAGE
 COPY 001-spring-petclinic.yaml /var/lib/pebble/default/layers/
 
 # copy petclinic sample
-COPY --chown=$UID:$GID --from=builder \
+COPY --from=builder \
     /spring-petclinic/target/spring-petclinic-2.7.3.jar /spring-petclinic.jar
