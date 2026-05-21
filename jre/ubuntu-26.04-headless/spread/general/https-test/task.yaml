@@ -1,0 +1,6 @@
+summary: Test HTTPS connection app
+
+execute: |
+  javac src/Main.java -d .
+  docker run --rm -v "$(pwd)":/app ${ROCK} exec java -cp /app Main || \
+    docker run --rm -v "$(pwd)":/app ${ROCK} exec java -cp /app -Djavax.net.debug=all Main
