@@ -1,7 +1,8 @@
 name: jre
 version: 25-edge
 base: bare
-build-base: ubuntu@26.04
+build-base: devel
+#build-base: ubuntu@26.04
 platforms:
   amd64:
   arm64:
