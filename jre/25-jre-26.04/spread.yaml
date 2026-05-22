@@ -13,7 +13,7 @@ suites:
       MAVEN_IMAGE: maven:latest
       ROCK: jre:latest
       VERSION: 25.0
-
+      ARCH: $(dpkg --print-architecture)
     summary: General integration tests
 
     prepare: |
@@ -29,9 +29,8 @@ suites:
 
       # Load the rock into docker
       sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:$ROCK
-      sudo apt-get install --yes openjdk-25-jdk-headless maven dpkg-dev
+      sudo apt-get install --yes openjdk-25-jdk-headless maven
       PROJECT_ROOT="$(dirname $CRAFT_ARTIFACT)"
-      ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
       docker build --build-arg ARCH=${ARCH} \
         --build-arg BASE_IMAGE=${ROCK} -t ${MAVEN_IMAGE} \
         ${PROJECT_ROOT}/containers \
