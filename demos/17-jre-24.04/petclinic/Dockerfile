@@ -1,7 +1,7 @@
 ARG PETCLINIC_REPO
 ARG PETCLINIC_TAG
 
-ARG BASE_IMAGE=ubuntu/jre:17-24.04_edge
+ARG BASE_IMAGE=ubuntu/jre:21-24.04_edge
 
 
 FROM ubuntu:noble-20250127 AS builder
