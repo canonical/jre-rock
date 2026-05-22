@@ -14,6 +14,7 @@ prepare: |
 execute: |
   if [ "$ARCH" = "arm64" ]; then
     echo "MongoDB does not work on arm64, skipping tests"
+    exit 0
   fi
   DOCKER_OPTS="--rm \
     -u $(id -u ${USER}):$(id -g ${USER}) \
