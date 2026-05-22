@@ -5,7 +5,7 @@ images are smaller in size and, therefore less prone to vulnerabilities. Know
 more about chisel [here](https://github.com/canonical/chisel).
 
 We currently have Chiselled OpenJDK 11 on Noble. See
-[rockcraft.yaml](./ockcraft.yaml).
+[rockcraft.yaml](./rockcraft.yaml).
 
 ### Building the image(s)
 
