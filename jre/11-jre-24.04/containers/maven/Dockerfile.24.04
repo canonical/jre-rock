@@ -1,0 +1,18 @@
+ARG UBUNTU_RELEASE=24.04
+ARG BASE_IMAGE=ubuntu/jre:11_edge
+ARG MAVEN_IMAGE=maven:3.9.9-eclipse-temurin-11
+ARG ARCH=amd64
+FROM $MAVEN_IMAGE AS builder
+FROM $BASE_IMAGE
+ARG ARCH
+
+COPY --from=builder /bin/sh /bin/sh
+COPY --from=builder /usr/bin/chmod /usr/bin/chmod
+COPY --from=builder /usr/bin/uname /usr/bin/uname
+COPY --from=builder /usr/bin/dirname /usr/bin/dirname
+COPY --from=builder /usr/bin/grep /usr/bin/grep
+# note, Temurin base does not install into /etc/maven and /usr/share/java
+# other base might require copying those folders
+COPY --from=builder /usr/share/maven /usr/share/maven
+
+ENTRYPOINT [ "/usr/share/maven/bin/mvn" ]

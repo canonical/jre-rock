@@ -1,11 +1,8 @@
 # Chiselled Ubuntu for JRE
 
-The different releases of this Ubuntu JRE image are maintained via
-channel branches (e.g. `channels/11/edge`).
-
-The repository is being migrated to a single `main` branch.
-
 Read more about the repository structure and build automation [here](<https://github.com/ubuntu-rocks/.github/blob/main/profile/README.md#-joining-the-ubuntu-rocks-project>).
+
+See [jre](jre) for individual rocks.
 
 
 ## License

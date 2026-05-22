@@ -1,0 +1,4 @@
+summary: openjdk smoke test
+
+execute: |
+  docker run --rm ${ROCK} exec java --version | grep -q "${VERSION}"
