@@ -24,7 +24,7 @@ suites:
 
       # Wait for docker daemon to come online
       sudo apt-get install --yes retry
-      retry --times=10 --delay 2 -- docker run hello-world
+      retry --times=10 --delay 2 -- docker version
       sudo apt-get remove --yes retry
 
       # Load the rock into docker

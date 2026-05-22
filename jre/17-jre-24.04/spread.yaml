@@ -23,7 +23,7 @@ suites:
       sudo apt install -y -u openjdk-17-jdk maven curl retry
       # Wait for docker daemon to come online
 
-      retry --times=10 --delay 2 -- docker run hello-world
+      retry --times=10 --delay 2 -- docker version
 
       # Load the rock into docker
       rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:${BASE_IMAGE}
