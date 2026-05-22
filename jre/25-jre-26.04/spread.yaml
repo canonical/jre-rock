@@ -29,7 +29,7 @@ suites:
 
       # Load the rock into docker
       sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:$ROCK
-      sudo apt-get install --yes openjdk-25-jdk-headless maven
+      sudo apt-get install --yes openjdk-25-jdk-headless maven dpkg-dev
       PROJECT_ROOT="$(dirname $CRAFT_ARTIFACT)"
       ARCH=$(dpkg-architecture -qDEB_HOST_ARCH)
       docker build --build-arg ARCH=${ARCH} \
