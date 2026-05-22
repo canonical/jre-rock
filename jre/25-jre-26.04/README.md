@@ -1,6 +1,6 @@
 # Chiselled OpenJDK 25
 
-This directory contains the image recipes of Chiselled OpenJDK 21. These
+This directory contains the image recipes of Chiselled OpenJDK 25. These
 images are smaller in size and, therefore less prone to vulnerabilities. Know
 more about chisel [here](https://github.com/canonical/chisel).
 
@@ -97,7 +97,7 @@ javac HelloWorld.java -d .
  You may run the application with the Chiselled Java image as shown below:
 
 ```sh
-docker run --rm -v `pwd`:/app ubuntu/jre:21_edge \
+docker run --rm -v `pwd`:/app ubuntu/jre:25_edge \
  exec java -cp /app HelloWorld
 Hello World!
 ```
