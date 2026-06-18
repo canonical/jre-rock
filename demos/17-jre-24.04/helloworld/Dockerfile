@@ -1,6 +1,6 @@
 ARG BASE_IMAGE=ubuntu/jre:17-24.04_edge
 
-FROM ubuntu:noble-20250127 AS builder
+FROM ubuntu:noble-20260509.1 AS builder
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -U -y \
     default-jdk-headless
