@@ -17,7 +17,7 @@ jobs:
       arch-map: ${{ steps.set-map.outputs.arch-map }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Read .github/ci.yaml
         id: read-ci-config
