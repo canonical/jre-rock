@@ -3,7 +3,7 @@ ARG BASE_IMAGE=ubuntu/jre:17_edge
 ARG MAVEN_IMAGE=maven:3.9.9-eclipse-temurin-17
 ARG ARCH=amd64
 FROM $MAVEN_IMAGE AS builder
-FROM ubuntu:noble-20260509.1 AS jdk
+FROM ubuntu:noble-20260610 AS jdk
 ARG ARCH
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates \

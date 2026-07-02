@@ -4,7 +4,7 @@ ARG PETCLINIC_TAG
 ARG BASE_IMAGE=ubuntu/jre:21-24.04_edge
 
 
-FROM ubuntu:noble-20260509.1 AS builder
+FROM ubuntu:noble-20260610 AS builder
 
 ENV PETCLINIC_TAG=${PETCLINIC_TAG:-spring-boot-3.0.6}
 ENV PETCLINIC_REPO=${PETCLINIC_REPO:-https://github.com/vpa1977/spring-petclinic}
