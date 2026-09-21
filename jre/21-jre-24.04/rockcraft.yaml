@@ -83,7 +83,7 @@ parts:
     override-build: |
       GRAAL_MODULES=java.base
       if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
-        GRAAL_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
+        GRAAL_MODULES=jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
       fi
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
