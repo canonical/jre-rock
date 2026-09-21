@@ -104,6 +104,10 @@ parts:
       # Cannot find package listed in 'build-packages': openjdk-25-jdk-headless
       # https://github.com/canonical/rockcraft/issues/1005
       apt-get update && apt-get install -y openjdk-25-jdk-headless
+      GRAAL_MODULES=
+      if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
+        GRAAL_MODULES=jdk.internal.vm.ci,jdk.graal.compiler,jdk.graal.compiler.management
+      fi
       JAVA_HOME=usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
       /usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}/bin/jlink \
@@ -135,8 +139,6 @@ parts:
       jdk.crypto.ec,\
       jdk.dynalink,\
       jdk.editpad,\
-      jdk.graal.compiler,\
-      jdk.graal.compiler.management,\
       jdk.hotspot.agent,\
       jdk.httpserver,\
       jdk.incubator.vector,\
@@ -145,7 +147,7 @@ parts:
       jdk.internal.le,\
       jdk.internal.md,\
       jdk.internal.opt,\
-      jdk.internal.vm.ci,\
+      $GRAAL_MODULES,\
       jdk.jartool,\
       jdk.javadoc,\
       jdk.jcmd,\

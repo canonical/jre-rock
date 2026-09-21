@@ -81,6 +81,10 @@ parts:
     build-packages:
       - openjdk-21-jdk-headless
     override-build: |
+      GRAAL_MODULES=
+      if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
+        GRAAL_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
+      fi
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
       jlink --add-modules java.base,java.instrument,\
@@ -94,7 +98,7 @@ parts:
       java.xml.crypto,jdk.charsets,jdk.crypto.cryptoki,\
       jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.jsobject,jdk.localedata,\
       jdk.naming.dns,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,\
-      jdk.zipfs,java.compiler,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management,\
+      jdk.zipfs,java.compiler,$GRAAL_MODULES,\
       jdk.jdwp.agent --no-man-pages -G \
       --output ${CRAFT_PART_INSTALL}/${JAVA_HOME}
 
