@@ -106,7 +106,7 @@ parts:
       apt-get update && apt-get install -y openjdk-25-jdk-headless
       GRAAL_MODULES=java.base
       if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
-        GRAAL_MODULES=jdk.internal.vm.ci,jdk.graal.compiler,jdk.graal.compiler.management
+        GRAAL_MODULES=jdk.hotspot.agent,jdk.internal.vm.ci,jdk.graal.compiler,jdk.graal.compiler.management
       fi
       JAVA_HOME=usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
@@ -139,7 +139,6 @@ parts:
       jdk.crypto.ec,\
       jdk.dynalink,\
       jdk.editpad,\
-      jdk.hotspot.agent,\
       jdk.httpserver,\
       jdk.incubator.vector,\
       jdk.internal.ed,\
