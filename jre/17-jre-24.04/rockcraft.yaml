@@ -5,6 +5,8 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
+  ppc64el:
+  s390x:
 
 environment:
   JAVA_HOME: /usr/lib/jvm/java-17-openjdk-${CRAFT_ARCH_BUILD_FOR}
