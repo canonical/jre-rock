@@ -113,9 +113,9 @@ parts:
     build-packages:
       - openjdk-17-jdk-headless
     override-build: |
-      GRAAL_MODULES=java.base
+      AMD_ARM_MODULES=java.base
       if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
-        GRAAL_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
+        AMD_ARM_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
       fi
       JAVA_HOME=usr/lib/jvm/java-17-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
@@ -149,7 +149,7 @@ parts:
       jdk.httpserver,\
       jdk.incubator.foreign,\
       jdk.incubator.vector,\
-      $GRAAL_MODULES,\
+      $AMD_ARM_MODULES,\
       jdk.jdwp.agent,\
       jdk.jfr,\
       jdk.jsobject,\
