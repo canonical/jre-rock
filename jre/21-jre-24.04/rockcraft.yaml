@@ -83,14 +83,14 @@ parts:
     override-build: |
       GRAAL_MODULES=java.base
       if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
-        GRAAL_MODULES=jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
+        GRAAL_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
       fi
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
       jlink --add-modules java.base,java.instrument,\
       java.logging,java.management,java.management.rmi,\
       java.naming,java.prefs,java.rmi,java.security.sasl,\
-      java.xml,jdk.internal.vm.ci,\
+      java.xml,\
       jdk.jfr,jdk.management,jdk.management.jfr,jdk.management.agent,\
       jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.unsupported,jdk.naming.rmi,\
       java.se,java.net.http,java.scripting,java.security.jgss,\
