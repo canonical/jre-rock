@@ -81,7 +81,7 @@ parts:
     build-packages:
       - openjdk-21-jdk-headless
     override-build: |
-      GRAAL_MODULES=
+      GRAAL_MODULES=java.base
       if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
         GRAAL_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
       fi
