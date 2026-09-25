@@ -1,4 +1,4 @@
-FROM ubuntu:noble-20260509.1 AS builder
+FROM ubuntu:26.04 AS builder
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -U -y \
     default-jdk-headless
