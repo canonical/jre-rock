@@ -16,7 +16,7 @@ run-user: _daemon_
 summary: OpenJDK 11 headless runtime environment
 description: |
   This rock provides OpenJDK 11 runtime environment including the
-  following public modules:
+  following public modules on all platforms:
   - java.base - the foundational APIs of the Java SE Platform.
   - java.compiler - the Language Model, Annotation Processing,
     and Java Compiler APIs.
@@ -43,7 +43,6 @@ description: |
     transactions in JDBC.
   - java.xml - the Java APIs for XML Processing (JAXP).
   - java.xml.crypto - the API for XML cryptography.
-  - jdk.aot - experimental Ahead of Time compiler.
   - jdk.charsets - the  charsets that are not in java.base
     (mostly double byte and IBM charsets).
   - jdk.crypto.cryptoki -the implementation of the SunPKCS11
@@ -84,6 +83,14 @@ description: |
   - jdk.xml.dom  - the subset of the W3C Document Object Model (DOM)
     API that is not part of the Java SE API.
   - jdk.zipfs - the implementation of the Zip file system provider.
+  AMD64 and ARM platforms additionally include:
+  - jdk.aot - experimental Ahead of Time compiler.
+  - jdk.internal.vm.ci - the JVM Compiler Interface (JVMCI)
+    API.
+  - jdk.internal.vm.compiler - the Graal JIT compiler
+    implementation.
+  - jdk.internal.vm.compiler.management - the management
+    interface for the Graal JIT compiler.
 
 parts:
   dependencies:
