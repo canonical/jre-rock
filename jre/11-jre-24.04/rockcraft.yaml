@@ -5,6 +5,8 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
+  ppc64el:
+  s390x:
 
 environment:
   JAVA_HOME: /usr/lib/jvm/java-11-openjdk-${CRAFT_ARCH_BUILD_FOR}
@@ -14,7 +16,7 @@ run-user: _daemon_
 summary: OpenJDK 11 headless runtime environment
 description: |
   This rock provides OpenJDK 11 runtime environment including the
-  following public modules:
+  following public modules on all platforms:
   - java.base - the foundational APIs of the Java SE Platform.
   - java.compiler - the Language Model, Annotation Processing,
     and Java Compiler APIs.
@@ -41,7 +43,6 @@ description: |
     transactions in JDBC.
   - java.xml - the Java APIs for XML Processing (JAXP).
   - java.xml.crypto - the API for XML cryptography.
-  - jdk.aot - experimental Ahead of Time compiler.
   - jdk.charsets - the  charsets that are not in java.base
     (mostly double byte and IBM charsets).
   - jdk.crypto.cryptoki -the implementation of the SunPKCS11
@@ -82,6 +83,14 @@ description: |
   - jdk.xml.dom  - the subset of the W3C Document Object Model (DOM)
     API that is not part of the Java SE API.
   - jdk.zipfs - the implementation of the Zip file system provider.
+  AMD64 and ARM platforms additionally include:
+  - jdk.aot - experimental Ahead of Time compiler.
+  - jdk.internal.vm.ci - the JVM Compiler Interface (JVMCI)
+    API.
+  - jdk.internal.vm.compiler - the Graal JIT compiler
+    implementation.
+  - jdk.internal.vm.compiler.management - the management
+    interface for the Graal JIT compiler.
 
 parts:
   dependencies:
@@ -101,6 +110,10 @@ parts:
     build-packages:
       - openjdk-11-jdk-headless
     override-build: |
+      AMD_ARM_MODULES=java.base
+      if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
+        AMD_ARM_MODULES=jdk.aot,jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
+      fi
       JAVA_HOME=usr/lib/jvm/java-11-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
       /${JAVA_HOME}/bin/jlink --add-modules java.base,\
@@ -121,7 +134,6 @@ parts:
       java.sql,java.sql.rowset,\
       java.transaction.xa,\
       java.xml,java.xml.crypto,\
-      jdk.aot,\
       jdk.charsets,\
       jdk.crypto.cryptoki,\
       jdk.crypto.ec,\
@@ -129,9 +141,7 @@ parts:
       jdk.httpserver,\
       jdk.internal.ed,\
       jdk.internal.le,\
-      jdk.internal.vm.ci,\
-      jdk.internal.vm.compiler,\
-      jdk.internal.vm.compiler.management,\
+      $AMD_ARM_MODULES,\
       jdk.jdwp.agent,\
       jdk.jfr,\
       jdk.jsobject,\

@@ -27,7 +27,7 @@ jobs:
         id: set-map
         run: |
           if [[ "${{ github.repository_owner }}" != "canonical" ]]; then
-            echo 'arch-map={"amd64":["ubuntu-24.04"],"arm64":["ubuntu-24.04-arm"]}' >> $GITHUB_OUTPUT
+            echo 'arch-map={"amd64":["ubuntu-24.04"],"arm64":["ubuntu-24.04-arm"],"ppc64el":["ubuntu-24.04-ppc64el"],"s390x":["ubuntu-24.04-s390x"]}' >> $GITHUB_OUTPUT
           fi
 
       # TODO: remove once the pro-feature is stable in rockcraft

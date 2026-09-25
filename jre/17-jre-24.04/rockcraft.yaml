@@ -5,6 +5,8 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
+  ppc64el:
+  s390x:
 
 environment:
   JAVA_HOME: /usr/lib/jvm/java-17-openjdk-${CRAFT_ARCH_BUILD_FOR}
@@ -14,7 +16,7 @@ run-user: _daemon_
 summary: OpenJDK 17 headless runtime environment
 description: |
   This rock provides OpenJDK 17 runtime environment including the
-  following public modules:
+  following public modules on all platforms:
   - java.base - the foundational APIs of the Java SE Platform.
   - java.compiler - the Java programming language compiler
     API.
@@ -60,12 +62,6 @@ description: |
   - jdk.incubator.vector - the API for vector computations
     that compile at runtime to optimal vector instructions on
     supported CPU architectures.
-  - jdk.internal.vm.ci - the JVM Compiler Interface (JVMCI)
-    API.
-  - jdk.internal.vm.compiler - the Graal JIT compiler
-    implementation.
-  - jdk.internal.vm.compiler.management - the management
-    interface for the Graal JIT compiler.
   - jdk.jdwp.agent - the implementation of the Java Debug Wire
     Protocol (JDWP) agent.
   - jdk.jfr - the API for JDK Flight Recorder.
@@ -92,6 +88,13 @@ description: |
   - jdk.xml.dom  - the subset of the W3C Document Object Model (DOM)
     API that is not part of the Java SE API.
   - jdk.zipfs - the implementation of the Zip file system provider.
+  AMD64 and ARM platforms additionally include:
+  - jdk.internal.vm.ci - the JVM Compiler Interface (JVMCI)
+    API.
+  - jdk.internal.vm.compiler - the Graal JIT compiler
+    implementation.
+  - jdk.internal.vm.compiler.management - the management
+    interface for the Graal JIT compiler.
 
 parts:
   dependencies:
@@ -111,6 +114,10 @@ parts:
     build-packages:
       - openjdk-17-jdk-headless
     override-build: |
+      AMD_ARM_MODULES=java.base
+      if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
+        AMD_ARM_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
+      fi
       JAVA_HOME=usr/lib/jvm/java-17-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
       /${JAVA_HOME}/bin/jlink --add-modules java.base,\
@@ -143,9 +150,7 @@ parts:
       jdk.httpserver,\
       jdk.incubator.foreign,\
       jdk.incubator.vector,\
-      jdk.internal.vm.ci,\
-      jdk.internal.vm.compiler,\
-      jdk.internal.vm.compiler.management,\
+      $AMD_ARM_MODULES,\
       jdk.jdwp.agent,\
       jdk.jfr,\
       jdk.jsobject,\

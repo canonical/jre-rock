@@ -5,6 +5,8 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
   arm64:
+  ppc64el:
+  s390x:
 
 environment:
   JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
@@ -12,50 +14,66 @@ environment:
 summary: OpenJDK 21 headless runtime environment
 description: |
   This rock provides OpenJDK 21 runtime environment including the following modules:
-   - java.base
-   - java.instrument
-   - java.logging,java.management
-   - java.management.rmi
-   - java.naming
-   - java.prefs
-   - java.rmi
-   - java.security.sasl
-   - java.xml,
-   - jdk.internal.vm.ci
-   - jdk.jfr,jdk.management
-   - jdk.management.jfr
-   - jdk.management.agent
-   - jdk.net
-   - jdk.nio.mapmode
-   - jdk.sctp
-   - jdk.unsupported
-   - jdk.naming.rmi
-   - java.se
-   - java.net.http
-   - java.scripting
-   - java.security.jgss
-   - java.smartcardio
-   - java.sql
-   - java.sql.rowset
-   - java.transaction.xa
-   - java.xml.crypto
-   - jdk.charsets
-   - jdk.crypto.cryptoki
-   - jdk.crypto.ec
-   - jdk.dynalink
-   - jdk.httpserver
-   - jdk.jsobject
-   - jdk.localedata
-   - jdk.naming.dns
-   - jdk.security.auth
-   - jdk.security.jgss
-   - jdk.xml.dom
-   - jdk.zipfs
-   - java.compiler
-   - jdk.internal.vm.compiler
-   - jdk.internal.vm.compiler.management
-   - jdk.jdwp.agent
-
+  - java.base - the foundational APIs of the Java SE Platform.
+  - java.instrument - services that allow agents to instrument programs
+    running on the JVM.
+  - java.logging - the Java Logging API.
+  - java.management - the Java Management Extensions (JMX) API.
+  - java.management.rmi - the RMI connector for the Java Management
+    Extensions (JMX) Remote API.
+  - java.naming - the Java Naming and Directory Interface (JNDI) API.
+  - java.prefs - the Preferences API.
+  - java.rmi - the Remote Method Invocation (RMI) API.
+  - java.security.sasl - Java support for the IETF Simple Authentication
+    and Security Layer (SASL).
+  - java.xml - the Java APIs for XML Processing (JAXP).
+  - jdk.jfr - the API for JDK Flight Recorder.
+  - jdk.management - JDK-specific management interfaces for the JVM.
+  - jdk.management.jfr - the Management Interface for JDK Flight Recorder.
+  - jdk.management.agent - the JMX management agent.
+  - jdk.net - the JDK-specific Networking API.
+  - jdk.nio.mapmode - the file mapping modes for java.nio.
+  - jdk.sctp - the JDK-specific API for SCTP.
+  - jdk.unsupported - access to sun.misc.Unsafe
+  - jdk.naming.rmi - the implementation of the RMI Java Naming provider.
+  - java.se - the API of the Java SE Platform.
+  - java.net.http - the HTTP Client API.
+  - java.scripting - the Scripting API.
+  - java.security.jgss - the Java binding of the IETF Generic Security
+    Services API (GSS-API).
+  - java.smartcardio - the Java Smart Card I/O API.
+  - java.sql - the JDBC API.
+  - java.sql.rowset - the JDBC RowSet API.
+  - java.transaction.xa - an API for supporting distributed transactions in
+    JDBC.
+  - java.xml.crypto - the API for XML cryptography.
+  - jdk.charsets - the charsets that are not in java.base (mostly double
+    byte and IBM charsets).
+  - jdk.crypto.cryptoki - the implementation of the SunPKCS11 security
+    provider.
+  - jdk.crypto.ec - the implementation of the SunEC security provider.
+  - jdk.dynalink - the API for dynamic linking of high-level operations on
+    objects.
+  - jdk.httpserver - the JDK-specific HTTP server API, and provides the
+    jwebserver tool for running a minimal HTTP server.
+  - jdk.jsobject - the API for the JavaScript Object.
+  - jdk.localedata - the locale data for locales other than US locale.
+  - jdk.naming.dns - the implementation of the DNS Java Naming provider.
+  - jdk.security.auth - the implementations of the javax.security.auth.*
+    interfaces and various authentication modules.
+  - jdk.security.jgss - the JDK extensions to the GSS-API and an
+    implementation of the SASL GSSAPI mechanism.
+  - jdk.xml.dom - the subset of the W3C Document Object Model (DOM) API
+    that is not part of the Java SE API.
+  - jdk.zipfs - the implementation of the Zip file system provider.
+  - java.compiler - the Java programming language compiler API.
+  - jdk.jdwp.agent - the implementation of the Java Debug Wire Protocol
+    (JDWP) agent.
+  AMD64 and ARM platforms additionally include:
+  - jdk.internal.vm.ci - the JVM Compiler Interface (JVMCI) API.
+  - jdk.internal.vm.compiler - the Graal JIT compiler implementation.
+  - jdk.internal.vm.compiler.management - the management interface for the
+    Graal JIT compiler.
 parts:
   dependencies:
     plugin: nil
@@ -79,12 +97,16 @@ parts:
     build-packages:
       - openjdk-21-jdk-headless
     override-build: |
+      AMD_ARM_MODULES=java.base
+      if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
+        AMD_ARM_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
+      fi
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
       jlink --add-modules java.base,java.instrument,\
       java.logging,java.management,java.management.rmi,\
       java.naming,java.prefs,java.rmi,java.security.sasl,\
-      java.xml,jdk.internal.vm.ci,\
+      java.xml,\
       jdk.jfr,jdk.management,jdk.management.jfr,jdk.management.agent,\
       jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.unsupported,jdk.naming.rmi,\
       java.se,java.net.http,java.scripting,java.security.jgss,\
@@ -92,7 +114,7 @@ parts:
       java.xml.crypto,jdk.charsets,jdk.crypto.cryptoki,\
       jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.jsobject,jdk.localedata,\
       jdk.naming.dns,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,\
-      jdk.zipfs,java.compiler,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management,\
+      jdk.zipfs,java.compiler,$AMD_ARM_MODULES,\
       jdk.jdwp.agent --no-man-pages -G \
       --output ${CRAFT_PART_INSTALL}/${JAVA_HOME}
 

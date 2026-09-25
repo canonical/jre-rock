@@ -13,8 +13,8 @@ prepare: |
       mvn -Dmaven.repo.local="${M2_CACHE}" compile process-test-resources test-compile)
 
 execute: |
-  if [ "$ARCH" = "arm64" ]; then
-    echo "MongoDB does not work on arm64, skipping tests"
+  if [ "$ARCH" != "amd64" ]; then
+    echo "MongoDB does not work on "$ARCH", skipping tests"
     exit 0
   fi
   DOCKER_OPTS="--rm \

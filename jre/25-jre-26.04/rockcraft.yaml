@@ -5,76 +5,109 @@ build-base: ubuntu@26.04
 platforms:
   amd64:
   arm64:
+  ppc64el:
+  s390x:
 
 summary: OpenJDK 25 headless runtime environment
 description: |
   This rock provides OpenJDK 25 runtime environment including
-  the following modules:
-  - java.base
-  - java.compiler
-  - java.instrument
-  - java.logging
-  - java.management
-  - java.management.rmi
-  - java.naming
-  - java.net.http
-  - java.prefs
-  - java.rmi
-  - java.scripting
-  - java.se
-  - java.security.jgss
-  - java.security.sasl
-  - java.smartcardio
-  - java.sql
-  - java.sql.rowset
-  - java.transaction.xa
-  - java.xml
-  - java.xml.crypto
-  - jdk.attach
-  - jdk.charsets
-  - jdk.compiler
-  - jdk.crypto.cryptoki
-  - jdk.crypto.ec
-  - jdk.dynalink
-  - jdk.editpad
-  - jdk.graal.compiler
-  - jdk.graal.compiler.management
-  - jdk.hotspot.agent
-  - jdk.httpserver
-  - jdk.incubator.vector
-  - jdk.internal.ed
-  - jdk.internal.jvmstat
-  - jdk.internal.le
-  - jdk.internal.md
-  - jdk.internal.opt
-  - jdk.internal.vm.ci
-  - jdk.jartool
-  - jdk.javadoc
-  - jdk.jcmd
-  - jdk.jconsole
-  - jdk.jdeps
-  - jdk.jdi
-  - jdk.jdwp.agent
-  - jdk.jfr
-  - jdk.jlink
-  - jdk.jpackage
-  - jdk.jshell
-  - jdk.jsobject
-  - jdk.jstatd
-  - jdk.localedata
-  - jdk.management
-  - jdk.management.agent
-  - jdk.management.jfr
-  - jdk.naming.dns
-  - jdk.naming.rmi
-  - jdk.net
-  - jdk.nio.mapmode
-  - jdk.sctp
-  - jdk.security.auth
-  - jdk.security.jgss
-  - jdk.unsupported
-  - jdk.zipfs
-
+  the following modules on all platforms:
+  - java.base - the foundational APIs of the Java SE Platform.
+  - java.compiler - the Java programming language compiler API.
+  - java.instrument - services that allow agents to instrument programs
+    running on the JVM.
+  - java.logging - the Java Logging API.
+  - java.management - the Java Management Extensions (JMX) API.
+  - java.management.rmi - the RMI connector for the Java Management
+    Extensions (JMX) Remote API.
+  - java.naming - the Java Naming and Directory Interface (JNDI) API.
+  - java.net.http - the HTTP Client API.
+  - java.prefs - the Preferences API.
+  - java.rmi - the Remote Method Invocation (RMI) API.
+  - java.scripting - the Scripting API.
+  - java.se - the API of the Java SE Platform.
+  - java.security.jgss - the Java binding of the IETF Generic Security
+    Services API (GSS-API).
+  - java.security.sasl - Java support for the IETF Simple Authentication
+    and Security Layer (SASL).
+  - java.smartcardio - the Java Smart Card I/O API.
+  - java.sql - the JDBC API.
+  - java.sql.rowset - the JDBC RowSet API.
+  - java.transaction.xa - an API for supporting distributed transactions in
+    JDBC.
+  - java.xml - the Java APIs for XML Processing (JAXP).
+  - java.xml.crypto - the API for XML cryptography.
+  - jdk.attach - Defines the attach API.
+  - jdk.charsets - the charsets that are not in java.base (mostly double
+    byte and IBM charsets).
+  - jdk.compiler - Defines the implementation of the system Java compiler
+    and its command line equivalent, javac.
+  - jdk.crypto.cryptoki - the implementation of the SunPKCS11 security
+    provider.
+  - jdk.crypto.ec - the implementation of the SunEC security provider.
+  - jdk.dynalink - the API for dynamic linking of high-level operations on
+    objects.
+  - jdk.editpad - Provides the implementation of the edit pad service used
+    by jdk.jshell.
+  - jdk.httpserver - the JDK-specific HTTP server API, and provides the
+    jwebserver tool for running a minimal HTTP server.
+  - jdk.incubator.vector - the API for vector computations that compile at
+    runtime to optimal vector instructions on
+    supported CPU architectures.
+  - jdk.internal.ed - Internal editor support for JDK tools.
+  - jdk.internal.jvmstat - Defines an internal API for monitoring a HotSpot
+    JVM using its shared memory instrumentation
+    buffer.
+  - jdk.internal.le - Internal API for line editing.
+  - jdk.internal.md - Internal support for Markdown.
+  - jdk.internal.opt - Internal option processing API.
+  - jdk.jartool - Defines tools for manipulating Java Archive (JAR) files,
+    including jar and jarsigner.
+  - jdk.javadoc - Defines the implementation of the system documentation
+    tool and its command-line equivalent, javadoc.
+  - jdk.jcmd - Defines tools for diagnostics and troubleshooting a JVM such
+    as jcmd, jps, and jstat.
+  - jdk.jconsole - Defines the JMX graphical tool, jconsole, for monitoring
+    and managing a running application.
+  - jdk.jdeps - Defines tools for analysing dependencies in Java libraries
+    and programs, including jdeps, javap, jdeprscan, and
+    jnativescan.
+  - jdk.jdi - Defines the Java Debug Interface.
+  - jdk.jdwp.agent - the implementation of the Java Debug Wire Protocol
+    (JDWP) agent.
+  - jdk.jfr - the API for JDK Flight Recorder.
+  - jdk.jlink - Defines the jlink tool for creating run-time images, the
+    jmod tool for creating and manipulating JMOD files, and the
+    jimage tool.
+  - jdk.jpackage - Defines the Java Packaging tool, jpackage.
+  - jdk.jshell - Provides the jshell tool for evaluating snippets of Java
+    code, and defines a JDK-specific API for modeling and
+    executing snippets.
+  - jdk.jsobject - the API for the JavaScript Object.
+  - jdk.jstatd - Defines the jstatd tool for starting a daemon for the
+    jstat tool to monitor JVM statistics remotely.
+  - jdk.localedata - the locale data for locales other than US locale.
+  - jdk.management - JDK-specific management interfaces for the JVM.
+  - jdk.management.agent - the JMX management agent.
+  - jdk.management.jfr - the Management Interface for JDK Flight Recorder.
+  - jdk.naming.dns - the implementation of the DNS Java Naming provider.
+  - jdk.naming.rmi - the implementation of the RMI Java Naming provider.
+  - jdk.net - the JDK-specific Networking API.
+  - jdk.nio.mapmode - the file mapping modes for java.nio.
+  - jdk.sctp - the JDK-specific API for SCTP.
+  - jdk.security.auth - the implementations of the javax.security.auth.*
+    interfaces and various authentication modules.
+  - jdk.security.jgss - the JDK extensions to the GSS-API and an
+    implementation of the SASL GSSAPI mechanism.
+  - jdk.unsupported - access to sun.misc.Unsafe
+  - jdk.zipfs - the implementation of the Zip file system provider.
+  AMD64 and ARM plaforms also include:
+  - jdk.graal.compiler - JVMCI compiler implementation for the JVM.
+  - jdk.graal.compiler.management - Registers JVMCI compiler specific
+    management interfaces for the JVM.
+  - jdk.hotspot.agent - Defines the implementation of the HotSpot
+    Serviceability Agent.
+  - jdk.internal.vm.ci - the JVM Compiler Interface (JVMCI) API.
 parts:
   dependencies:
     plugin: nil
@@ -102,6 +135,10 @@ parts:
       # Cannot find package listed in 'build-packages': openjdk-25-jdk-headless
       # https://github.com/canonical/rockcraft/issues/1005
       apt-get update && apt-get install -y openjdk-25-jdk-headless
+      AMD_ARM_MODULES=java.base
+      if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
+        AMD_ARM_MODULES=jdk.hotspot.agent,jdk.internal.vm.ci,jdk.graal.compiler,jdk.graal.compiler.management
+      fi
       JAVA_HOME=usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
       /usr/lib/jvm/java-25-openjdk-${CRAFT_ARCH_BUILD_FOR}/bin/jlink \
@@ -133,9 +170,6 @@ parts:
       jdk.crypto.ec,\
       jdk.dynalink,\
       jdk.editpad,\
-      jdk.graal.compiler,\
-      jdk.graal.compiler.management,\
-      jdk.hotspot.agent,\
       jdk.httpserver,\
       jdk.incubator.vector,\
       jdk.internal.ed,\
@@ -143,7 +177,7 @@ parts:
       jdk.internal.le,\
       jdk.internal.md,\
       jdk.internal.opt,\
-      jdk.internal.vm.ci,\
+      $AMD_ARM_MODULES,\
       jdk.jartool,\
       jdk.javadoc,\
       jdk.jcmd,\
