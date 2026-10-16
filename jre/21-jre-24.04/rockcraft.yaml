@@ -81,6 +81,7 @@ parts:
       - base-passwd_data
       - base-files_base
       - base-files_chisel
+      - base-files_release-info
       - libc6_libs
       - libgcc-s1_libs
       - libstdc++6_libs
