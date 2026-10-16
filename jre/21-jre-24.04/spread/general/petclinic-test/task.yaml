@@ -9,7 +9,7 @@ environment:
 prepare: |
   git clone --branch ${TAG} ${PETCLINIC_REPO} && \
     (cd ${PROJECT} && git checkout ${TAG} && \
-    mvn -Dmaven.repo.local="${M2_CACHE}" compile process-test-resources test-compile)
+    JAVA_HOME=/usr/lib/jvm/java-21-openjdk-$ARCH/ mvn -Dmaven.repo.local="${M2_CACHE}" compile process-test-resources test-compile)
 
 execute: |
   DOCKER_OPTS="--rm \
