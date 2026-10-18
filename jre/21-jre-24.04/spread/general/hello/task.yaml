@@ -1,5 +1,6 @@
 summary: Hello world test
 
 execute: |
-  javac src/HelloWorld.java -d .
+  javac --version
+  javac --release 8 src/HelloWorld.java -d .
   docker run --rm -v "$(pwd)":/app ${ROCK} exec java -cp /app HelloWorld

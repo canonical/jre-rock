@@ -3,7 +3,7 @@ set -ex
 
 echo "Running test for HTTPS connection app"
 
-javac src/Main.java -d .
+javac --release 8 src/Main.java -d .
 
 # run the test and if it fails, retry with the full network diagnostics
 docker run --rm -v $PWD:/app:ro \
