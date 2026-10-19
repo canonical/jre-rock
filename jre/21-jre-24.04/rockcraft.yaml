@@ -11,64 +11,74 @@ platforms:
 environment:
   JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
 
+run-user: _daemon_
+
 summary: OpenJDK 21 headless runtime environment
 description: |
-  This rock provides OpenJDK 21 runtime environment including the following modules:
+  This rock provides OpenJDK 21 runtime environment including the
+  following public modules:
   - java.base - the foundational APIs of the Java SE Platform.
-  - java.instrument - services that allow agents to instrument programs
-    running on the JVM.
+  - java.compiler - the Language Model, Annotation Processing,
+    and Java Compiler APIs.
+  - java.instrument - services that allow agents to instrument
+    programs running on the JVM.
   - java.logging - the Java Logging API.
   - java.management - the Java Management Extensions (JMX) API.
   - java.management.rmi - the RMI connector for the Java Management
     Extensions (JMX) Remote API.
   - java.naming - the Java Naming and Directory Interface (JNDI) API.
+  - java.net.http - the HTTP Client and WebSocket APIs.
   - java.prefs - the Preferences API.
   - java.rmi - the Remote Method Invocation (RMI) API.
-  - java.security.sasl - Java support for the IETF Simple Authentication
-    and Security Layer (SASL).
-  - java.xml - the Java APIs for XML Processing (JAXP).
-  - jdk.jfr - the API for JDK Flight Recorder.
-  - jdk.management - JDK-specific management interfaces for the JVM.
-  - jdk.management.jfr - the Management Interface for JDK Flight Recorder.
-  - jdk.management.agent - the JMX management agent.
-  - jdk.net - the JDK-specific Networking API.
-  - jdk.nio.mapmode - the file mapping modes for java.nio.
-  - jdk.sctp - the JDK-specific API for SCTP.
-  - jdk.unsupported - access to sun.misc.Unsafe
-  - jdk.naming.rmi - the implementation of the RMI Java Naming provider.
-  - java.se - the API of the Java SE Platform.
-  - java.net.http - the HTTP Client API.
   - java.scripting - the Scripting API.
-  - java.security.jgss - the Java binding of the IETF Generic Security
-    Services API (GSS-API).
+  - java.se -  the API of the Java SE Platform.
+  - java.security.jgss - the Java binding of the IETF Generic
+    Security Services API (GSS-API).
+  - java.security.sasl - Java support for the IETF Simple
+    Authentication and Security Layer (SASL).
   - java.smartcardio - the Java Smart Card I/O API.
   - java.sql - the JDBC API.
   - java.sql.rowset - the JDBC RowSet API.
-  - java.transaction.xa - an API for supporting distributed transactions in
-    JDBC.
+  - java.transaction.xa - an API for supporting distributed
+    transactions in JDBC.
+  - java.xml - the Java APIs for XML Processing (JAXP).
   - java.xml.crypto - the API for XML cryptography.
-  - jdk.charsets - the charsets that are not in java.base (mostly double
-    byte and IBM charsets).
-  - jdk.crypto.cryptoki - the implementation of the SunPKCS11 security
+  - jdk.charsets - the  charsets that are not in java.base
+    (mostly double byte and IBM charsets).
+  - jdk.crypto.cryptoki -the implementation of the SunPKCS11
+    security provider.
+  - jdk.crypto.ec - the implementation of the SunEC security
     provider.
-  - jdk.crypto.ec - the implementation of the SunEC security provider.
-  - jdk.dynalink - the API for dynamic linking of high-level operations on
-    objects.
-  - jdk.httpserver - the JDK-specific HTTP server API, and provides the
-    jwebserver tool for running a minimal HTTP server.
+  - jdk.dynalink - the API for dynamic linking of high-level
+    operations on objects.
+  - jdk.httpserver -  the JDK-specific HTTP server API, and provides
+    the jwebserver tool for running a minimal HTTP server.
+  - jdk.jdwp.agent - the implementation of the Java Debug Wire
+    Protocol (JDWP) agent.
+  - jdk.jfr - the API for JDK Flight Recorder.
   - jdk.jsobject - the API for the JavaScript Object.
-  - jdk.localedata - the locale data for locales other than US locale.
-  - jdk.naming.dns - the implementation of the DNS Java Naming provider.
-  - jdk.security.auth - the implementations of the javax.security.auth.*
-    interfaces and various authentication modules.
-  - jdk.security.jgss - the JDK extensions to the GSS-API and an
+  - jdk.localedata - the locale data for locales other than US
+    locale.
+  - jdk.management - JDK-specific management interfaces for the JVM.
+  - jdk.management.agent - the JMX management agent.
+  - jdk.management.jfr - the Management Interface for JDK Flight
+    Recorder.
+  - jdk.naming.dns - the implementation of the DNS Java Naming
+    provider.
+  - jdk.naming.rmi - the implementation of the RMI Java Naming
+    provider.
+  - jdk.net -  the JDK-specific Networking API.
+  - jdk.nio.mapmode - the JDK-specific file mapping modes.
+  - jdk.sctp - the JDK-specific API for SCTP.
+  - jdk.security.auth - the implementations of the
+    javax.security.auth.* interfaces and various authentication
+    modules.
+  - jdk.security.jgss - the  JDK extensions to the GSS-API and an
     implementation of the SASL GSSAPI mechanism.
-  - jdk.xml.dom - the subset of the W3C Document Object Model (DOM) API
-    that is not part of the Java SE API.
+  - jdk.unsupported - access to sun.misc.Unsafe
+  - jdk.xml.dom  - the subset of the W3C Document Object Model (DOM)
+    API that is not part of the Java SE API.
   - jdk.zipfs - the implementation of the Zip file system provider.
-  - java.compiler - the Java programming language compiler API.
-  - jdk.jdwp.agent - the implementation of the Java Debug Wire Protocol
-    (JDWP) agent.
   AMD64 and ARM platforms additionally include:
   - jdk.internal.vm.ci - the JVM Compiler Interface (JVMCI) API.
   - jdk.internal.vm.compiler - the Graal JIT compiler implementation.
@@ -78,7 +88,6 @@ parts:
   dependencies:
     plugin: nil
     stage-packages:
-      - base-passwd_data
       - base-files_base
       - base-files_chisel
       - base-files_release-info
@@ -88,10 +97,6 @@ parts:
       - zlib1g_libs
       - libpcsclite1_libs
       - libnss3_libs
-    override-build: |
-      craftctl default
-      groupadd --root ${CRAFT_PART_INSTALL} app -g 10001
-      useradd -d /home/app -s /bin/bash --root ${CRAFT_PART_INSTALL} -g app -m -u 10001 app
 
   runtime:
     plugin: nil
@@ -104,21 +109,88 @@ parts:
       fi
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
       rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
-      jlink --add-modules java.base,java.instrument,\
-      java.logging,java.management,java.management.rmi,\
-      java.naming,java.prefs,java.rmi,java.security.sasl,\
+      jlink --add-modules java.base,\
+      java.compiler,\
+      java.instrument,\
+      java.logging,\
+      java.management,\
+      java.management.rmi,\
+      java.naming,\
+      java.net.http,\
+      java.prefs,\
+      java.rmi,\
+      java.scripting,\
+      java.se,\
+      java.security.jgss,\
+      java.security.sasl,\
+      java.smartcardio,\
+      java.sql,\
+      java.sql.rowset,\
+      java.transaction.xa,\
       java.xml,\
-      jdk.jfr,jdk.management,jdk.management.jfr,jdk.management.agent,\
-      jdk.net,jdk.nio.mapmode,jdk.sctp,jdk.unsupported,jdk.naming.rmi,\
-      java.se,java.net.http,java.scripting,java.security.jgss,\
-      java.smartcardio,java.sql,java.sql.rowset,java.transaction.xa,\
-      java.xml.crypto,jdk.charsets,jdk.crypto.cryptoki,\
-      jdk.crypto.ec,jdk.dynalink,jdk.httpserver,jdk.jsobject,jdk.localedata,\
-      jdk.naming.dns,jdk.security.auth,jdk.security.jgss,jdk.xml.dom,\
-      jdk.zipfs,java.compiler,$AMD_ARM_MODULES,\
-      jdk.jdwp.agent --no-man-pages -G \
+      java.xml.crypto,\
+      jdk.charsets,\
+      jdk.crypto.cryptoki,\
+      jdk.crypto.ec,\
+      jdk.dynalink,\
+      jdk.httpserver,\
+      $AMD_ARM_MODULES,\
+      jdk.jdwp.agent,\
+      jdk.jfr,\
+      jdk.jsobject,\
+      jdk.localedata,\
+      jdk.management,\
+      jdk.management.agent,\
+      jdk.management.jfr,\
+      jdk.naming.dns,\
+      jdk.naming.rmi,\
+      jdk.net,\
+      jdk.nio.mapmode,\
+      jdk.sctp,\
+      jdk.security.auth,\
+      jdk.security.jgss,\
+      jdk.unsupported,\
+      jdk.xml.dom,\
+      jdk.zipfs --no-header-files --no-man-pages -G \
       --output ${CRAFT_PART_INSTALL}/${JAVA_HOME}
 
       cd ${CRAFT_PART_INSTALL}
       mkdir -p usr/bin
-      ln -s --relative ${JAVA_HOME}/bin/java usr/bin/
+      for tool in java jfr jrunscript jwebserver keytool rmiregistry; do
+        ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
+      done
+
+  security-manifest:
+    after:
+      - runtime
+      - dependencies
+    plugin: nil
+    source: .
+    build-packages:
+      - zstd
+      - jq
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/usr/share/rocks/
+      FIELDS=(
+          '${db:Status-Abbrev}'
+          '${binary:Package}'
+          '${Version}'
+          '${source:Package}'
+          '${Source:Version}\n'
+        )
+      zstd -d -f -q $CRAFT_STAGE/var/lib/chisel/manifest.wall \
+        -o $CRAFT_PART_BUILD/manifest
+
+      # add openjdk-21 package
+      (
+        IFS="," && \
+        echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && \
+        dpkg-query -f "${FIELDS[*]}" \
+          -W openjdk-21-jdk-headless | head -n 1
+      ) > $CRAFT_PART_INSTALL/usr/share/rocks/dpkg.query
+      # add rest of the packages
+      jq -r 'select(.kind == "package") | "\(.name) \(.version)"' \
+        $CRAFT_PART_BUILD/manifest | \
+        awk -v arch=${CRAFT_ARCH_BUILD_FOR} -F' ' -f print-dpkg-query.awk \
+          >> $CRAFT_PART_INSTALL/usr/share/rocks/dpkg.query
+      craftctl default
