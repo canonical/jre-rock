@@ -8,6 +8,8 @@ platforms:
   ppc64el:
   s390x:
 
+run-user: _daemon_
+
 summary: OpenJDK 25 headless runtime environment
 description: |
   This rock provides OpenJDK 25 runtime environment including
