@@ -7,9 +7,28 @@ environment:
   PETCLINIC_REPO: https://github.com/vpa1977/${PROJECT}
 
 prepare: |
-  git clone --branch ${TAG} ${PETCLINIC_REPO} && \
-    (cd ${PROJECT} && git checkout ${TAG} && \
-    mvn -Dmaven.repo.local="${M2_CACHE}" compile process-test-resources test-compile)
+  git clone --branch ${TAG} ${PETCLINIC_REPO}
+  cat << 'EOF' >  ${PROJECT}/settings.xml
+  <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0
+                                https://maven.apache.org/xsd/settings-1.2.0.xsd">
+
+    <mirrors>
+      <!-- Mirror official Maven Central traffic through Aliyun -->
+      <mirror>
+        <id>aliyun-central</id>
+        <name>Aliyun Central Mirror</name>
+        <url>https://maven.aliyun.com/repository/central</url>
+        <mirrorOf>central</mirrorOf>
+      </mirror>
+    </mirrors>
+  </settings>
+  EOF
+  (cd ${PROJECT} && git checkout ${TAG} && \
+    mvn -s settings.xml \
+    -Dcheckstyle.skip=true \
+    -Dmaven.repo.local="${M2_CACHE}" compile process-test-resources test-compile)
 
 execute: |
   DOCKER_OPTS="--rm \
@@ -20,6 +39,8 @@ execute: |
   docker run \
     ${DOCKER_OPTS} \
     ${MAVEN_IMAGE} \
+      -s settings.xml \
+      -Dcheckstyle.skip=true \
       -Dmaven.repo.local="${M2_CACHE}" \
       -Duser.home=$(pwd) \
       surefire:test
