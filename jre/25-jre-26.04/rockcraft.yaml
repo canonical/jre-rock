@@ -225,14 +225,6 @@ parts:
     source-branch: main
     override-prime: |
       gen_manifest
-      FIELDS=(
-          '${db:Status-Abbrev}'
-          '${binary:Package}'
-          '${Version}'
-          '${source:Package}'
-          '${Source:Version}\n'
-        )
-      IFS="," dpkg-query -f "${FIELDS[*]}" \
-          -W openjdk-25-jdk-headless | head -n 1 \
-        >> ${CRAFT_PRIME}/usr/share/rocks/dpkg.query
+      dpkg-query -W -f='ii,${Package},${Version},,\n' \
+        openjdk-25-jdk-headless >> "${CRAFT_PRIME}/usr/share/rocks/dpkg.query"
       craftctl default
