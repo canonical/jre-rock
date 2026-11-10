@@ -96,8 +96,9 @@ parts:
       - chisel/latest/stable
     override-pull: |
       craftctl default
-      # TODO: drop once the jimage split, libsyslookup, sctp, runtime-tools and
-      # libsctp1 slices are merged into chisel-releases
+      # TODO: drop once these are merged into chisel-releases:
+      # #1481 (libsctp1), #1494 (sctp slice), #1497 (libsyslookup, release,
+      # runtime-tools) and #1491 (NSS softoken for the security slice)
       git apply "${CRAFT_PROJECT_DIR}/chisel-releases.patch"
     override-build: |
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
@@ -105,12 +106,13 @@ parts:
         chisel cut --release "${CRAFT_PART_SRC}" --arch "${CRAFT_ARCH_BUILD_FOR}" --root "$@"
       }
 
-      # everything shipped comes from slices, except the module image
+      # everything shipped comes from slices, except the module image. the core
+      # slice brings the deb's lib/modules and release, which are replaced below.
       cut "${CRAFT_PART_INSTALL}" \
         base-files_base \
         base-files_chisel \
         base-files_release-info \
-        openjdk-21-jre-headless_jvm \
+        openjdk-21-jre-headless_core \
         openjdk-21-jre-headless_awt \
         openjdk-21-jre-headless_console \
         openjdk-21-jre-headless_debug \
@@ -192,6 +194,7 @@ parts:
       jdk.xml.dom,\
       jdk.zipfs --no-header-files --no-man-pages --strip-java-debug-attributes \
       --output "${CRAFT_PART_BUILD}/jlink"
+      # replace the deb's full module image and its release file with the jlinked ones
       install -m 0644 "${CRAFT_PART_BUILD}/jlink/lib/modules" "${CRAFT_PART_INSTALL}/${JAVA_HOME}/lib/modules"
       install -m 0644 "${CRAFT_PART_BUILD}/jlink/release" "${CRAFT_PART_INSTALL}/${JAVA_HOME}/release"
 
