@@ -226,5 +226,5 @@ parts:
     override-prime: |
       gen_manifest
       dpkg-query -W -f='ii,${Package},${Version},,\n' \
-        openjdk-25-jdk-headless >> "${CRAFT_PRIME}/usr/share/rocks/dpkg.query"
+        openjdk-25-jre-headless >> "${CRAFT_PRIME}/usr/share/rocks/dpkg.query"
       craftctl default
