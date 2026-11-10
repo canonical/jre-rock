@@ -1,0 +1,6 @@
+summary: SunPKCS11 provider backed by NSS
+
+execute: |
+  javac --release 21 src/NssProvider.java -d .
+  docker run --rm -v "$(pwd)":/app ${ROCK} exec java -cp /app NssProvider \
+    /etc/java-21-openjdk/security/nss.cfg | grep -q '^provider: SunPKCS11-NSS$'
