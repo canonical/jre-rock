@@ -1,0 +1,142 @@
+diff --git i/slices/libsctp1.yaml w/slices/libsctp1.yaml
+new file mode 100644
+index 0000000..9a1be2c
+--- /dev/null
++++ w/slices/libsctp1.yaml
+@@ -0,0 +1,15 @@
++package: libsctp1
++
++essential:
++  - libsctp1_copyright
++
++slices:
++  libs:
++    essential:
++      - libc6_libs
++    contents:
++      /usr/lib/*-linux-*/libsctp.so.1*:
++
++  copyright:
++    contents:
++      /usr/share/doc/libsctp1/copyright:
+diff --git i/slices/openjdk-21-jdk-headless.yaml w/slices/openjdk-21-jdk-headless.yaml
+index e775f1d..d474d47 100644
+--- i/slices/openjdk-21-jdk-headless.yaml
++++ w/slices/openjdk-21-jdk-headless.yaml
+@@ -50,6 +50,15 @@ slices:
+       /usr/lib/jvm/java-21-openjdk-*/bin/jstatd:
+       /usr/lib/jvm/java-21-openjdk-*/bin/jwebserver:
+
++  # Launchers for tools whose modules are part of the runtime
++  runtime-tools:
++    essential:
++      - openjdk-21-jre-headless_jvm
++    contents:
++      /usr/lib/jvm/java-21-openjdk-*/bin/jfr:
++      /usr/lib/jvm/java-21-openjdk-*/bin/jrunscript:
++      /usr/lib/jvm/java-21-openjdk-*/bin/jwebserver:
++
+   # OpenJDK modules required to build the runtime image
+   modules:
+     essential:
+diff --git i/slices/openjdk-21-jre-headless.yaml w/slices/openjdk-21-jre-headless.yaml
+index fed45ec..587a753 100644
+--- i/slices/openjdk-21-jre-headless.yaml
++++ w/slices/openjdk-21-jre-headless.yaml
+@@ -34,7 +34,7 @@ slices:
+   #                                    not relevant.
+   # - util-linux                     - needed for bash completion
+   #                                    not relevant.
+-  core:
++  jvm:
+     essential:
+       - libc6_libs
+       - libgcc-s1_libs
+@@ -66,17 +66,41 @@ slices:
+       /usr/lib/jvm/java-21-openjdk-*/lib/libnet.so:
+       # required for IO.
+       /usr/lib/jvm/java-21-openjdk-*/lib/libnio.so:
++      # FFM default symbol lookup (java.base)
++      /usr/lib/jvm/java-21-openjdk-*/lib/libsyslookup.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/libverify.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/libzip.so:
+-      /usr/lib/jvm/java-21-openjdk-*/lib/modules:
+       /usr/lib/jvm/java-21-openjdk-*/lib/server/libjsig.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/server/libjvm.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/tzdb.dat:
+
++  # The full runtime: native jvm plus the deb's module image
++  core:
++    essential:
++      - openjdk-21-jre-headless_jimage
++      - openjdk-21-jre-headless_jvm
++
++  # The deb's jlink-ed module image
++  jimage:
++    essential:
++      - openjdk-21-jre-headless_jvm
++    contents:
++      /usr/lib/jvm/java-21-openjdk-*/lib/modules:
++      # describes the module image, e.g. MODULES=
++      /usr/lib/jvm/java-21-openjdk-*/release:
++
++  # Native part of jdk.sctp
++  sctp:
++    essential:
++      - libsctp1_libs
++      - openjdk-21-jre-headless_jvm
++    contents:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libsctp.so:
++
+   # Native part of jdk.prefs modules
+   prefs:
+     essential:
+-      - openjdk-21-jre-headless_core
++      - openjdk-21-jre-headless_jvm
+     contents:
+       /usr/lib/jvm/java-21-openjdk-*/lib/libprefs.so:
+
+@@ -91,14 +115,14 @@ slices:
+   # Native part of the console support
+   console:
+     essential:
+-      - openjdk-21-jre-headless_core
++      - openjdk-21-jre-headless_jvm
+     contents:
+       /usr/lib/jvm/java-21-openjdk-*/lib/lible.so:
+
+   # Debug support
+   debug:
+     essential:
+-      - openjdk-21-jre-headless_core
++      - openjdk-21-jre-headless_jvm
+     contents:
+       /usr/lib/jvm/java-21-openjdk-*/lib/libattach.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/libdt_socket.so:
+@@ -130,7 +154,7 @@ slices:
+     essential:
+       - libnss3_nss
+       - libpcsclite1_libs
+-      - openjdk-21-jre-headless_core
++      - openjdk-21-jre-headless_jvm
+     contents:
+       /etc/java-21-openjdk/security/blocked.certs:
+       /etc/java-21-openjdk/security/default.policy:
+@@ -167,7 +191,7 @@ slices:
+   # Java Flight Recorder configuration and jar file
+   jfr:
+     essential:
+-      - openjdk-21-jre-headless_core
++      - openjdk-21-jre-headless_jvm
+     contents:
+       /etc/java-21-openjdk/jfr/default.jfc:
+       /etc/java-21-openjdk/jfr/profile.jfc:
+@@ -183,7 +207,7 @@ slices:
+       - libharfbuzz0b_libs
+       - libjpeg8_libs
+       - liblcms2-2_libs
+-      - openjdk-21-jre-headless_core
++      - openjdk-21-jre-headless_jvm
+     contents:
+       /etc/java-21-openjdk/psfont.properties.ja:
+       /etc/java-21-openjdk/psfontj2d.properties:
