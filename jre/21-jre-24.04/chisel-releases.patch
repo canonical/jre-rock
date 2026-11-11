@@ -1,3 +1,105 @@
+diff --git a/slices/libbrotli1.yaml b/slices/libbrotli1.yaml
+--- a/slices/libbrotli1.yaml
++++ b/slices/libbrotli1.yaml
+@@ -12,6 +12,19 @@
+       /usr/lib/*-linux-*/libbrotlidec.so.1*:
+       /usr/lib/*-linux-*/libbrotlienc.so.1*:
+
++  brotlicommon:
++    essential:
++      - libc6_libs
++    contents:
++      /usr/lib/*-linux-*/libbrotlicommon.so.1*:
++
++  brotlidec:
++    essential:
++      - libbrotli1_brotlicommon
++      - libc6_libs
++    contents:
++      /usr/lib/*-linux-*/libbrotlidec.so.1*:
++
+   copyright:
+     contents:
+       /usr/share/doc/libbrotli1/copyright:
+diff --git a/slices/libexpat1.yaml b/slices/libexpat1.yaml
+--- a/slices/libexpat1.yaml
++++ b/slices/libexpat1.yaml
+@@ -11,6 +11,14 @@
+       /usr/lib/*-linux-*/libexpat.so.1*:
+       /usr/lib/*-linux-*/libexpatw.so.1*:
+
++  expat:
++    essential:
++      - libc6_libs
++    v3-essential:
++      libgcc-s1_libs: {arch: [armhf]}
++    contents:
++      /usr/lib/*-linux-*/libexpat.so.1*:
++
+   copyright:
+     contents:
+       /usr/share/doc/libexpat1/copyright:
+diff --git a/slices/libfontconfig1.yaml b/slices/libfontconfig1.yaml
+--- a/slices/libfontconfig1.yaml
++++ b/slices/libfontconfig1.yaml
+@@ -13,6 +13,16 @@
+     contents:
+       /usr/lib/*-linux-*/libfontconfig.so.1*:
+
++  # libfontconfig.so.1 with only the essentials it links. use this instead of libs.
++  fontconfig:
++    essential:
++      - fontconfig-config_config
++      - libc6_libs
++      - libexpat1_expat
++      - libfreetype6_freetype
++    contents:
++      /usr/lib/*-linux-*/libfontconfig.so.1*:
++
+   copyright:
+     contents:
+       /usr/share/doc/libfontconfig1/copyright:
+diff --git a/slices/libfreetype6.yaml b/slices/libfreetype6.yaml
+--- a/slices/libfreetype6.yaml
++++ b/slices/libfreetype6.yaml
+@@ -14,6 +14,17 @@
+     contents:
+       /usr/lib/*-linux-*/libfreetype.so.6*:
+
++  # libfreetype.so.6 with only the essentials it links. use this instead of libs.
++  freetype:
++    essential:
++      - libbrotli1_brotlidec
++      - libbz2-1.0_libs
++      - libc6_libs
++      - libpng16-16t64_libs
++      - zlib1g_libs
++    contents:
++      /usr/lib/*-linux-*/libfreetype.so.6*:
++
+   copyright:
+     contents:
+       /usr/share/doc/libfreetype6/copyright:
+diff --git a/slices/libharfbuzz0b.yaml b/slices/libharfbuzz0b.yaml
+--- a/slices/libharfbuzz0b.yaml
++++ b/slices/libharfbuzz0b.yaml
+@@ -13,6 +13,16 @@
+     contents:
+       /usr/lib/*-linux-*/libharfbuzz.so.0*:
+
++  # libharfbuzz.so.0 with only the essentials it links. use this instead of libs.
++  harfbuzz:
++    essential:
++      - libc6_libs
++      - libfreetype6_freetype
++      - libglib2.0-0t64_core
++      - libgraphite2-3_libs
++    contents:
++      /usr/lib/*-linux-*/libharfbuzz.so.0*:
++
+   copyright:
+     contents:
+       /usr/share/doc/libharfbuzz0b/copyright:
 diff --git a/slices/libnss3.yaml b/slices/libnss3.yaml
 --- a/slices/libnss3.yaml
 +++ b/slices/libnss3.yaml
@@ -90,3 +192,40 @@ diff --git a/slices/openjdk-21-jre-headless.yaml b/slices/openjdk-21-jre-headles
        - libpcsclite1_libs
        - openjdk-21-jre-headless_core
      contents:
+@@ -176,6 +190,7 @@
+       /usr/lib/jvm/java-21-openjdk-*/lib/jrt-fs.jar:
+
+   # headless UI
++  # superseded by awt-v2
+   awt:
+     essential:
+       - libatomic1_libs
+@@ -196,6 +211,28 @@
+       /usr/lib/jvm/java-21-openjdk-*/lib/psfont.properties.ja:
+       /usr/lib/jvm/java-21-openjdk-*/lib/psfontj2d.properties:
+
++  # v2 of awt: the same files with a trimmed font stack, without glib's gio
++  # and brotli's encoder, and without libatomic, which no awt library links.
++  # use this instead of awt.
++  awt-v2:
++    essential:
++      - libfontconfig1_fontconfig
++      - libharfbuzz0b_harfbuzz
++      - libjpeg8_libs
++      - liblcms2-2_libs
++      - openjdk-21-jre-headless_core
++    contents:
++      /etc/java-21-openjdk/psfont.properties.ja:
++      /etc/java-21-openjdk/psfontj2d.properties:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libawt.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libawt_headless.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libfontmanager.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libjavajpeg.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/liblcms.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libmlib_image.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/psfont.properties.ja:
++      /usr/lib/jvm/java-21-openjdk-*/lib/psfontj2d.properties:
++
+   copyright:
+     contents:
+       /usr/share/doc/openjdk-21-jre-headless/copyright:

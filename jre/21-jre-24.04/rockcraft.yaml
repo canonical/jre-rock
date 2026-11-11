@@ -98,7 +98,8 @@ parts:
       craftctl default
       # TODO: drop once these are merged into chisel-releases:
       # #1481 (libsctp1), #1494 (sctp slice), #1497 (libsyslookup, release,
-      # runtime-tools) and #1491 (NSS softoken for the security slice)
+      # runtime-tools), #1491 (NSS softoken for the security slice) and #1503
+      # (awt-v2 with a trimmed font stack)
       git apply "${CRAFT_PROJECT_DIR}/chisel-releases.patch"
     override-build: |
       JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
@@ -113,7 +114,7 @@ parts:
         base-files_chisel \
         base-files_release-info \
         openjdk-21-jre-headless_core \
-        openjdk-21-jre-headless_awt \
+        openjdk-21-jre-headless_awt-v2 \
         openjdk-21-jre-headless_console \
         openjdk-21-jre-headless_debug \
         openjdk-21-jre-headless_jfr \
