@@ -69,6 +69,7 @@ description: |
     provider.
   - jdk.net -  the JDK-specific Networking API.
   - jdk.nio.mapmode - the JDK-specific file mapping modes.
+  - jdk.random - the LXM family of random number generators.
   - jdk.sctp - the JDK-specific API for SCTP.
   - jdk.security.auth - the implementations of the
     javax.security.auth.* interfaces and various authentication
@@ -85,31 +86,71 @@ description: |
   - jdk.internal.vm.compiler.management - the management interface for the
     Graal JIT compiler.
 parts:
-  dependencies:
-    plugin: nil
-    stage-packages:
-      - base-files_base
-      - base-files_chisel
-      - base-files_release-info
-      - libc6_libs
-      - libgcc-s1_libs
-      - libstdc++6_libs
-      - zlib1g_libs
-      - libpcsclite1_libs
-      - libnss3_libs
-
   runtime:
     plugin: nil
-    build-packages:
-      - openjdk-21-jdk-headless
+    source: https://github.com/canonical/chisel-releases.git
+    source-type: git
+    source-branch: ubuntu-24.04
+    source-depth: 1
+    build-snaps:
+      - chisel/latest/stable
+    override-pull: |
+      craftctl default
+      # TODO: drop once these are merged into chisel-releases:
+      # #1481 (libsctp1), #1494 (sctp slice), #1497 (libsyslookup, release,
+      # runtime-tools), #1491 (NSS softoken for the security slice) and #1503
+      # (awt-v2 with a trimmed font stack)
+      git apply "${CRAFT_PROJECT_DIR}/chisel-releases.patch"
     override-build: |
+      JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
+      cut() {
+        chisel cut --release "${CRAFT_PART_SRC}" --arch "${CRAFT_ARCH_BUILD_FOR}" --root "$@"
+      }
+
+      # everything shipped comes from slices, except the module image. the core
+      # slice brings the deb's lib/modules and release, which are replaced below.
+      cut "${CRAFT_PART_INSTALL}" \
+        base-files_base \
+        base-files_chisel \
+        base-files_release-info \
+        openjdk-21-jre-headless_core \
+        openjdk-21-jre-headless_awt-v2 \
+        openjdk-21-jre-headless_console \
+        openjdk-21-jre-headless_debug \
+        openjdk-21-jre-headless_jfr \
+        openjdk-21-jre-headless_management \
+        openjdk-21-jre-headless_prefs \
+        openjdk-21-jre-headless_rmi \
+        openjdk-21-jre-headless_sctp \
+        openjdk-21-jre-headless_security \
+        openjdk-21-jre-headless_tools \
+        openjdk-21-jdk-headless_runtime-tools
+
+      # build-only root with the jmods, jlink and the CA certificates
+      BUILD_ROOT="${CRAFT_PART_BUILD}/root"
+      rm -rf "${BUILD_ROOT}"
+      mkdir -p "${BUILD_ROOT}"
+      cut "${BUILD_ROOT}" \
+        openjdk-21-jdk-headless_modules \
+        openjdk-21-jre-headless_tools \
+        ca-certificates_data-with-certs
+      # the jdk's config symlinks point at /etc; resolve them so the tools
+      # run from the build root without a chroot
+      find "${BUILD_ROOT}/${JAVA_HOME}" -type l -lname '/etc/*' | while read -r link; do
+        target="${BUILD_ROOT}$(readlink "${link}")"
+        if [ -e "${target}" ]; then
+          cp --remove-destination "${target}" "${link}"
+        fi
+      done
+      BUILD_JAVA_HOME="${BUILD_ROOT}/${JAVA_HOME}"
+
       AMD_ARM_MODULES=java.base
       if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
         AMD_ARM_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
       fi
-      JAVA_HOME=usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
-      rm -rf ${CRAFT_PART_INSTALL}/${JAVA_HOME}
-      jlink --add-modules java.base,\
+      # --strip-java-debug-attributes produces the same image as -G without
+      # needing objcopy; the native libraries come from the slices
+      "${BUILD_JAVA_HOME}/bin/jlink" --add-modules java.base,\
       java.compiler,\
       java.instrument,\
       java.logging,\
@@ -146,30 +187,43 @@ parts:
       jdk.naming.rmi,\
       jdk.net,\
       jdk.nio.mapmode,\
+      jdk.random,\
       jdk.sctp,\
       jdk.security.auth,\
       jdk.security.jgss,\
       jdk.unsupported,\
       jdk.xml.dom,\
-      jdk.zipfs --no-header-files --no-man-pages -G \
-      --output ${CRAFT_PART_INSTALL}/${JAVA_HOME}
+      jdk.zipfs --no-header-files --no-man-pages --strip-java-debug-attributes \
+      --output "${CRAFT_PART_BUILD}/jlink"
+      # replace the deb's full module image and its release file with the jlinked ones
+      install -m 0644 "${CRAFT_PART_BUILD}/jlink/lib/modules" "${CRAFT_PART_INSTALL}/${JAVA_HOME}/lib/modules"
+      install -m 0644 "${CRAFT_PART_BUILD}/jlink/release" "${CRAFT_PART_INSTALL}/${JAVA_HOME}/release"
 
-      cd ${CRAFT_PART_INSTALL}
+      # lib/security/cacerts is a symlink to this keystore, as in the deb
+      KEYSTORE="${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts"
+      mkdir -p "$(dirname "${KEYSTORE}")"
+      rm -f "${KEYSTORE}"
+      for cert in "${BUILD_ROOT}"/usr/share/ca-certificates/mozilla/*.crt; do
+        name="$(basename "${cert}" .crt)"
+        # some certificate file names are not ascii
+        LC_ALL=C.UTF-8 "${BUILD_JAVA_HOME}/bin/keytool" -importcert -noprompt -storetype JKS \
+          -keystore "${KEYSTORE}" -storepass changeit \
+          -alias "debian:${name}.crt" -file "${cert}" >/dev/null
+      done
+
+      cd "${CRAFT_PART_INSTALL}"
       mkdir -p usr/bin
       for tool in java jfr jrunscript jwebserver keytool rmiregistry; do
-        ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
+        ln -s --relative "${JAVA_HOME}/bin/${tool}" usr/bin/
       done
 
   deb-security-manifest:
     plugin: make
     after:
       - runtime
-      - dependencies
     source: https://github.com/canonical/rocks-security-manifest
     source-type: git
     source-branch: main
     override-prime: |
       gen_manifest
-      dpkg-query -W -f='ii,${Package},${Version},,\n' \
-        openjdk-21-jre-headless >> "${CRAFT_PRIME}/usr/share/rocks/dpkg.query"
       craftctl default
