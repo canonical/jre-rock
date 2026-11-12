@@ -1,6 +1,7 @@
 summary: Validate Java cacerts contains all certificates from ca-certificates.conf
 
 execute: |
+  export LC_ALL=C.UTF-8
   container=$(docker create ${ROCK})
   trap 'docker rm -f "${container}"' EXIT
 
@@ -8,12 +9,13 @@ execute: |
   docker cp "${container}:/etc/ca-certificates.conf" ca-certificates.conf
 
   keytool -list -keystore "cacerts" -storepass changeit > "aliases.txt"
+  configured=0
 
   while IFS= read -r line || [ -n "${line}" ]; do
     case "${line}" in
       ""|\#*|\!*) continue ;;
     esac
-
+    configured=$((configured + 1))
     basename=$(basename "${line}" .crt)
     alias="debian:$(printf '%s' "${basename}" | tr '[:upper:]' '[:lower:]').pem"
 
@@ -22,3 +24,13 @@ execute: |
       exit 1
     fi
   done < "ca-certificates.conf"
+
+  if [ "${configured}" -eq 0 ]; then
+    echo "No certificates configured in ca-certificates.conf" >&2
+    exit 1
+  fi
+
+  if [ "$(wc -l < aliases.txt)" -ne "${configured}" ]; then
+    echo "Mismatch between configured certificates and aliases in cacerts" >&2
+    exit 1
+  fi
