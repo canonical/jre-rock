@@ -30,7 +30,8 @@ execute: |
     exit 1
   fi
 
-  if [ "$(wc -l < aliases.txt)" -ne "${configured}" ]; then
+  actual=$(grep -c ', trustedCertEntry,' aliases.txt)
+  if [ "${actual}" -ne "${configured}" ]; then
     echo "Mismatch between configured certificates and aliases in cacerts" >&2
     exit 1
   fi
