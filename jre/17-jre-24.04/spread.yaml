@@ -10,7 +10,7 @@ suites:
   spread/general/:
     summary: General integration tests
     environment:
-      BASE_IMAGE: ubuntu/jre:test
+      ROCK: ubuntu/jre:test
       MAVEN_IMAGE: ubuntu/jre:test-maven
       MAVEN_BASE_IMAGE: maven:3.9.9-eclipse-temurin-17
       RELEASE: 24.04
@@ -33,7 +33,7 @@ suites:
         --build-arg ARCH=${ARCH} \
         --build-arg UID=$(id -u ${USER}) \
         --build-arg GID=$(id -g ${USER}) \
-        --build-arg BASE_IMAGE=${BASE_IMAGE} \
+        --build-arg BASE_IMAGE=${ROCK} \
         --build-arg MAVEN_IMAGE=${MAVEN_BASE_IMAGE} \
         -f ${PROJECT_ROOT}/containers/maven/Dockerfile.${RELEASE} \
         ${PROJECT_ROOT}/containers/maven
