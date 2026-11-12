@@ -106,8 +106,7 @@ parts:
       - libpcsclite1_libs
       - libnss3_libs
       - ca-certificates-java_data-with-certs
-    # exclude raw certificates and configuration from the final
-    # image
+    # exclude raw certificates from the final image
     prime:
       - -usr/share/ca-certificates
     override-build: |
