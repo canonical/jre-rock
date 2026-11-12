@@ -26,7 +26,7 @@ suites:
       retry --times=10 --delay 2 -- docker version
 
       # Load the rock into docker
-      rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:${BASE_IMAGE}
+      rockcraft.skopeo --insecure-policy copy "oci-archive:$CRAFT_ARTIFACT" docker-daemon:${ROCK}
       PROJECT_ROOT="$(dirname $CRAFT_ARTIFACT)"
       docker build \
         -t ${MAVEN_IMAGE} \
@@ -39,7 +39,7 @@ suites:
         ${PROJECT_ROOT}/containers/maven
 
     restore: |
-      docker image rm --force ${BASE_IMAGE}
+      docker image rm --force ${ROCK}
 
 
 exclude:
