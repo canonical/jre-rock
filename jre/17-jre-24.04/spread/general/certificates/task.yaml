@@ -2,7 +2,7 @@ summary: Validate Java cacerts contains all certificates from ca-certificates.co
 
 execute: |
   export LC_ALL=C.UTF-8
-  container=$(docker create ${ROCK})
+  container=$(docker create "${ROCK}")
   trap 'docker rm -f "${container}"' EXIT
 
   docker cp "${container}:/etc/ssl/certs/java/cacerts" cacerts
