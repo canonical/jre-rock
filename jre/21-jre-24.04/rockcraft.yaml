@@ -101,7 +101,6 @@ parts:
     # exclude raw certificates and configuration from the final
     # image
     prime:
-      - -etc/ca-certificates.conf
       - -usr/share/ca-certificates
     override-build: |
       craftctl default

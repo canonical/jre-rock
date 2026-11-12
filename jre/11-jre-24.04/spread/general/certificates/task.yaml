@@ -1,0 +1,24 @@
+summary: Validate Java cacerts contains all certificates from ca-certificates.conf
+
+execute: |
+  container=$(docker create ${ROCK})
+  trap 'docker rm -f "${container}"' EXIT
+
+  docker cp "${container}:/etc/ssl/certs/java/cacerts" cacerts
+  docker cp "${container}:/etc/ca-certificates.conf" ca-certificates.conf
+
+  keytool -list -keystore "cacerts" -storepass changeit > "aliases.txt"
+
+  while IFS= read -r line || [ -n "${line}" ]; do
+    case "${line}" in
+      ""|\#*|\!*) continue ;;
+    esac
+
+    basename=$(basename "${line}" .crt)
+    alias="debian:$(printf '%s' "${basename}" | tr '[:upper:]' '[:lower:]').pem"
+
+    if ! grep -q "^${alias}," "aliases.txt"; then
+      echo "Missing certificate: ${line} (expected alias: ${alias})" >&2
+      exit 1
+    fi
+  done < "ca-certificates.conf"
