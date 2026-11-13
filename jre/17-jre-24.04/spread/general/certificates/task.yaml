@@ -1,0 +1,24 @@
+summary: Validate rock cacerts match ca-certificates.conf
+
+execute: |
+  export LC_ALL=C.UTF-8
+  container=$(docker create "${ROCK}")
+  workdir="$(mktemp -d)"
+  trap 'docker rm -f "${container}" ; rm -rf "${workdir}"' EXIT
+
+  # workaround snap permissions issue
+  docker cp "${container}:/etc/ssl/certs/java/cacerts" - | tar -xO > "${workdir}/cacerts"
+  docker cp "${container}:/etc/ca-certificates.conf" - | tar -xO > "${workdir}/ca-certificates.conf"
+
+  grep -v -e '^$' -e '^[#!]' "${workdir}/ca-certificates.conf" \
+    | sed -e 's|.*/||' -e 's/\.crt$//' -e 's/.*/debian:\L&.pem/' \
+    | sed -e 's/ /_/g' -e 's/[()]/=/g' -e 's/,/_/g' \
+    | sort > "${workdir}/expected_aliases.txt"
+
+  keytool -list -keystore "${workdir}/cacerts" -storepass changeit \
+    | grep ', trustedCertEntry,' \
+    | cut -d, -f1 \
+    | sort > "${workdir}/actual.txt"
+
+  test -s "${workdir}/expected_aliases.txt"
+  diff -u "${workdir}/expected_aliases.txt" "${workdir}/actual.txt"
