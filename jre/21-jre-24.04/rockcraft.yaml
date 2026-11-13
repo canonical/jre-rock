@@ -186,7 +186,7 @@ parts:
         --etccertsdir "${GEN_CERT_DIR}/etc/ssl/certs" \
         --hooksdir "${GEN_CERT_DIR}/hooks"
       find "${GEN_CERT_DIR}/etc/ssl/certs" -type l -name '*.pem' -printf '+%p\n' \
-        |  sort \
+        | sort \
         | java -Xmx64m -jar /usr/share/ca-certificates-java/ca-certificates-java.jar
 
       mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/
