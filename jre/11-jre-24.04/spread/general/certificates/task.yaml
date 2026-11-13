@@ -6,8 +6,9 @@ execute: |
   workdir="$(mktemp -d)"
   trap 'docker rm -f "${container}" ; rm -rf "${workdir}"' EXIT
 
-  docker cp "${container}:/etc/ssl/certs/java/cacerts" "${workdir}/cacerts"
-  docker cp "${container}:/etc/ca-certificates.conf" "${workdir}/ca-certificates.conf"
+  # workaround snap permissions issue
+  docker cp "${container}:/etc/ssl/certs/java/cacerts" - | tar -xO > "${workdir}/cacerts"
+  docker cp "${container}:/etc/ca-certificates.conf" - | tar -xO > "${workdir}/ca-certificates.conf"
 
   grep -v -e '^$' -e '^[#!]' "${workdir}/ca-certificates.conf" \
     | sed -e 's|.*/||' -e 's/\.crt$//' -e 's/.*/debian:\L&.pem/' \
