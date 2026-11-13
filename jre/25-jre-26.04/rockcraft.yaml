@@ -94,7 +94,7 @@ description: |
   - jdk.management.jfr - the Management Interface for JDK Flight Recorder.
   - jdk.naming.dns - the implementation of the DNS Java Naming provider.
   - jdk.naming.rmi - the implementation of the RMI Java Naming provider.
-  - jdk.net - the JDK-specific networking API.
+  - jdk.net - the JDK-specific Networking API.
   - jdk.nio.mapmode - the file mapping modes for java.nio.
   - jdk.sctp - the JDK-specific API for SCTP.
   - jdk.security.auth - the implementations of the javax.security.auth.*
@@ -229,7 +229,7 @@ parts:
       rm -f ${CRAFT_PART_INSTALL}/${JAVA_HOME}/lib/security/cacerts
       # Remove host cacerts to ensure fresh generation
       # As we do not need Java TLS on the host during the build,
-      # its fine to delete the certificate trust store
+      # it`s fine to delete the certificate trust store
       rm -f /etc/ssl/certs/java/cacerts
       GEN_CERT_DIR="$(mktemp -d)"
       trap 'rm -rf "${GEN_CERT_DIR}"' EXIT

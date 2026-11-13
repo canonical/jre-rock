@@ -195,7 +195,7 @@ parts:
       # its fine to delete the certificate trust store
       rm -f /etc/ssl/certs/java/cacerts
       GEN_CERT_DIR="$(mktemp -d)"
-      trap 'rm -rf ${GEN_CERT_DIR}' EXIT
+      trap 'rm -rf "${GEN_CERT_DIR}"' EXIT
       mkdir -p "${GEN_CERT_DIR}/etc/ssl/certs" "${GEN_CERT_DIR}/local" "${GEN_CERT_DIR}/hooks"
       update-ca-certificates --fresh \
         --certsconf "${CRAFT_STAGE}/etc/ca-certificates.conf" \

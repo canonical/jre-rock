@@ -186,10 +186,10 @@ parts:
       rm -f ${CRAFT_PART_INSTALL}/${JAVA_HOME}/lib/security/cacerts
       # Remove host cacerts to ensure fresh generation
       # As we do not need Java TLS on the host during the build,
-      # its fine to delete the certificate trust store
+      # it`s fine to delete the certificate trust store
       rm -f /etc/ssl/certs/java/cacerts
       GEN_CERT_DIR="$(mktemp -d)"
-      trap 'rm -rf ${GEN_CERT_DIR}' EXIT
+      trap 'rm -rf "${GEN_CERT_DIR}"' EXIT
       mkdir -p "${GEN_CERT_DIR}/etc/ssl/certs" "${GEN_CERT_DIR}/local" "${GEN_CERT_DIR}/hooks"
       update-ca-certificates --fresh \
         --certsconf "${CRAFT_STAGE}/etc/ca-certificates.conf" \
@@ -198,7 +198,7 @@ parts:
         --etccertsdir "${GEN_CERT_DIR}/etc/ssl/certs" \
         --hooksdir "${GEN_CERT_DIR}/hooks"
       find "${GEN_CERT_DIR}/etc/ssl/certs" -type l -name '*.pem' -printf '+%p\n' \
-        |  sort \
+        | sort \
         | java -Xmx64m -jar /usr/share/ca-certificates-java/ca-certificates-java.jar
 
       mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/
