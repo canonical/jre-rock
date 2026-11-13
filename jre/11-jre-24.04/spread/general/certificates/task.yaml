@@ -1,37 +1,23 @@
-summary: Validate Java cacerts contains all certificates from ca-certificates.conf
+summary: Validate rock cacerts match ca-certificates.conf
 
 execute: |
   export LC_ALL=C.UTF-8
   container=$(docker create "${ROCK}")
-  trap 'docker rm -f "${container}"' EXIT
+  workdir="$(mktemp -d)"
+  trap 'docker rm -f "${container}" ; rm -rf "${workdir}"' EXIT
 
-  docker cp "${container}:/etc/ssl/certs/java/cacerts" cacerts
-  docker cp "${container}:/etc/ca-certificates.conf" ca-certificates.conf
+  docker cp "${container}:/etc/ssl/certs/java/cacerts" "${workdir}/cacerts"
+  docker cp "${container}:/etc/ca-certificates.conf" "${workdir}/ca-certificates.conf"
 
-  keytool -list -keystore "cacerts" -storepass changeit > "aliases.txt"
-  configured=0
+  grep -v -e '^$' -e '^[#!]' "${workdir}/ca-certificates.conf" \
+    | sed -e 's|.*/||' -e 's/\.crt$//' -e 's/.*/debian:\L&.pem/' \
+    | sed -e 's/ /_/g' -e 's/[()]/=/g' -e 's/,/_/g' \
+    | sort > "${workdir}/expected_aliases.txt"
 
-  while IFS= read -r line || [ -n "${line}" ]; do
-    case "${line}" in
-      ""|\#*|\!*) continue ;;
-    esac
-    configured=$((configured + 1))
-    basename=$(basename "${line}" .crt)
-    alias="debian:$(printf '%s' "${basename}" | tr '[:upper:]' '[:lower:]').pem"
+  keytool -list -keystore "${workdir}/cacerts" -storepass changeit \
+    | grep ', trustedCertEntry,' \
+    | cut -d, -f1 \
+    | sort > "${workdir}/actual.txt"
 
-    if ! grep -q "^${alias}," "aliases.txt"; then
-      echo "Missing certificate: ${line} (expected alias: ${alias})" >&2
-      exit 1
-    fi
-  done < "ca-certificates.conf"
-
-  if [ "${configured}" -eq 0 ]; then
-    echo "No certificates configured in ca-certificates.conf" >&2
-    exit 1
-  fi
-
-  actual=$(grep -c ', trustedCertEntry,' aliases.txt)
-  if [ "${actual}" -ne "${configured}" ]; then
-    echo "Mismatch between configured certificates and aliases in cacerts" >&2
-    exit 1
-  fi
+  test -s "${workdir}/expected_aliases.txt"
+  diff -u "${workdir}/expected_aliases.txt" "${workdir}/actual.txt"
