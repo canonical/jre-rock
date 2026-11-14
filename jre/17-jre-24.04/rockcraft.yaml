@@ -163,6 +163,7 @@ parts:
       jdk.naming.rmi,\
       jdk.net,\
       jdk.nio.mapmode,\
+      jdk.random,\
       jdk.sctp,\
       jdk.security.auth,\
       jdk.security.jgss,\

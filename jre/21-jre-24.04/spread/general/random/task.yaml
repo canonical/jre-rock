@@ -1,0 +1,5 @@
+summary: Default and LXM random number generators
+
+execute: |
+  javac --release 17 src/RandomDefault.java -d .
+  docker run --rm -v "$(pwd)":/app ${ROCK} exec java -cp /app RandomDefault | grep -q ok
