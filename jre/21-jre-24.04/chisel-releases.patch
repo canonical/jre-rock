@@ -1,58 +1,79 @@
 diff --git a/slices/libbrotli1.yaml b/slices/libbrotli1.yaml
 --- a/slices/libbrotli1.yaml
 +++ b/slices/libbrotli1.yaml
-@@ -12,6 +12,19 @@
-       /usr/lib/*-linux-*/libbrotlidec.so.1*:
-       /usr/lib/*-linux-*/libbrotlienc.so.1*:
+@@ -5,11 +5,29 @@
 
-+  brotlicommon:
+ slices:
+   libs:
 +    essential:
-+      - libc6_libs
-+    contents:
-+      /usr/lib/*-linux-*/libbrotlicommon.so.1*:
++      - libbrotli1_brotlicommon
++      - libbrotli1_brotlidec
++      - libbrotli1_brotlienc
++
++  brotlicommon:
+     essential:
+       - libc6_libs
+     contents:
+       /usr/lib/*-linux-*/libbrotlicommon.so.1*:
 +
 +  brotlidec:
 +    essential:
 +      - libbrotli1_brotlicommon
 +      - libc6_libs
 +    contents:
-+      /usr/lib/*-linux-*/libbrotlidec.so.1*:
+       /usr/lib/*-linux-*/libbrotlidec.so.1*:
 +
++  brotlienc:
++    essential:
++      - libbrotli1_brotlicommon
++      - libc6_libs
++    contents:
+       /usr/lib/*-linux-*/libbrotlienc.so.1*:
+
    copyright:
-     contents:
-       /usr/share/doc/libbrotli1/copyright:
 diff --git a/slices/libexpat1.yaml b/slices/libexpat1.yaml
 --- a/slices/libexpat1.yaml
 +++ b/slices/libexpat1.yaml
-@@ -11,6 +11,14 @@
-       /usr/lib/*-linux-*/libexpat.so.1*:
-       /usr/lib/*-linux-*/libexpatw.so.1*:
+@@ -5,10 +5,24 @@
 
+ slices:
+   libs:
++    essential:
++      - libexpat1_expat
++      - libexpat1_expatw
++
 +  expat:
+     essential:
+       - libc6_libs
++    v3-essential:
++      libgcc-s1_libs: {arch: [armhf]}
+     contents:
+       /usr/lib/*-linux-*/libexpat.so.1*:
++
++  expatw:
 +    essential:
 +      - libc6_libs
 +    v3-essential:
 +      libgcc-s1_libs: {arch: [armhf]}
 +    contents:
-+      /usr/lib/*-linux-*/libexpat.so.1*:
-+
+       /usr/lib/*-linux-*/libexpatw.so.1*:
+
    copyright:
-     contents:
-       /usr/share/doc/libexpat1/copyright:
 diff --git a/slices/libfontconfig1.yaml b/slices/libfontconfig1.yaml
 --- a/slices/libfontconfig1.yaml
 +++ b/slices/libfontconfig1.yaml
-@@ -13,6 +13,16 @@
+@@ -13,6 +13,17 @@
      contents:
        /usr/lib/*-linux-*/libfontconfig.so.1*:
 
-+  # libfontconfig.so.1 with only the essentials it links. use this instead of libs.
-+  fontconfig:
++  # v2 of libs: the same files, with only the essentials libfontconfig links.
++  # use this instead of libs.
++  libs-v2:
 +    essential:
 +      - fontconfig-config_config
 +      - libc6_libs
 +      - libexpat1_expat
-+      - libfreetype6_freetype
++      - libfreetype6_libs-v2
 +    contents:
 +      /usr/lib/*-linux-*/libfontconfig.so.1*:
 +
@@ -62,12 +83,13 @@ diff --git a/slices/libfontconfig1.yaml b/slices/libfontconfig1.yaml
 diff --git a/slices/libfreetype6.yaml b/slices/libfreetype6.yaml
 --- a/slices/libfreetype6.yaml
 +++ b/slices/libfreetype6.yaml
-@@ -14,6 +14,17 @@
+@@ -14,6 +14,18 @@
      contents:
        /usr/lib/*-linux-*/libfreetype.so.6*:
 
-+  # libfreetype.so.6 with only the essentials it links. use this instead of libs.
-+  freetype:
++  # v2 of libs: the same files, with only the essentials libfreetype links.
++  # use this instead of libs.
++  libs-v2:
 +    essential:
 +      - libbrotli1_brotlidec
 +      - libbz2-1.0_libs
@@ -83,15 +105,16 @@ diff --git a/slices/libfreetype6.yaml b/slices/libfreetype6.yaml
 diff --git a/slices/libharfbuzz0b.yaml b/slices/libharfbuzz0b.yaml
 --- a/slices/libharfbuzz0b.yaml
 +++ b/slices/libharfbuzz0b.yaml
-@@ -13,6 +13,16 @@
+@@ -13,6 +13,17 @@
      contents:
        /usr/lib/*-linux-*/libharfbuzz.so.0*:
 
-+  # libharfbuzz.so.0 with only the essentials it links. use this instead of libs.
-+  harfbuzz:
++  # v2 of libs: the same files, with only the essentials libharfbuzz links.
++  # use this instead of libs.
++  libs-v2:
 +    essential:
 +      - libc6_libs
-+      - libfreetype6_freetype
++      - libfreetype6_libs-v2
 +      - libglib2.0-0t64_core
 +      - libgraphite2-3_libs
 +    contents:
@@ -116,26 +139,6 @@ diff --git a/slices/libnss3.yaml b/slices/libnss3.yaml
        - libnss3_nss
        - libsqlite3-0_libs
      contents:
-diff --git a/slices/libsctp1.yaml b/slices/libsctp1.yaml
-new file mode 100644
---- /dev/null
-+++ b/slices/libsctp1.yaml
-@@ -0,0 +1,15 @@
-+package: libsctp1
-+
-+essential:
-+  - libsctp1_copyright
-+
-+slices:
-+  libs:
-+    essential:
-+      - libc6_libs
-+    contents:
-+      /usr/lib/*-linux-*/libsctp.so.1*:
-+
-+  copyright:
-+    contents:
-+      /usr/share/doc/libsctp1/copyright:
 diff --git a/slices/openjdk-21-jdk-headless.yaml b/slices/openjdk-21-jdk-headless.yaml
 --- a/slices/openjdk-21-jdk-headless.yaml
 +++ b/slices/openjdk-21-jdk-headless.yaml
@@ -158,7 +161,7 @@ diff --git a/slices/openjdk-21-jdk-headless.yaml b/slices/openjdk-21-jdk-headles
 diff --git a/slices/openjdk-21-jre-headless.yaml b/slices/openjdk-21-jre-headless.yaml
 --- a/slices/openjdk-21-jre-headless.yaml
 +++ b/slices/openjdk-21-jre-headless.yaml
-@@ -66,12 +66,25 @@
+@@ -66,12 +66,16 @@
        /usr/lib/jvm/java-21-openjdk-*/lib/libnet.so:
        # required for IO.
        /usr/lib/jvm/java-21-openjdk-*/lib/libnio.so:
@@ -172,19 +175,10 @@ diff --git a/slices/openjdk-21-jre-headless.yaml b/slices/openjdk-21-jre-headles
        /usr/lib/jvm/java-21-openjdk-*/lib/tzdb.dat:
 +      # describes the module image, e.g. MODULES=
 +      /usr/lib/jvm/java-21-openjdk-*/release:
-+
-+  # Native part of jdk.sctp. The JDK opens libsctp.so.1 at run time, so the
-+  # package does not depend on libsctp1.
-+  sctp:
-+    essential:
-+      - libsctp1_libs
-+      - openjdk-21-jre-headless_core
-+    contents:
-+      /usr/lib/jvm/java-21-openjdk-*/lib/libsctp.so:
 
-   # Native part of jdk.prefs modules
-   prefs:
-@@ -129,6 +142,7 @@
+   # Native part of jdk.sctp. The JDK opens libsctp.so.1 at run time, so the
+   # package does not depend on libsctp1.
+@@ -138,6 +142,7 @@
    security:
      essential:
        - libnss3_nss
@@ -192,7 +186,7 @@ diff --git a/slices/openjdk-21-jre-headless.yaml b/slices/openjdk-21-jre-headles
        - libpcsclite1_libs
        - openjdk-21-jre-headless_core
      contents:
-@@ -176,6 +190,7 @@
+@@ -185,6 +190,7 @@
        /usr/lib/jvm/java-21-openjdk-*/lib/jrt-fs.jar:
 
    # headless UI
@@ -200,17 +194,18 @@ diff --git a/slices/openjdk-21-jre-headless.yaml b/slices/openjdk-21-jre-headles
    awt:
      essential:
        - libatomic1_libs
-@@ -196,6 +211,28 @@
+@@ -205,6 +211,29 @@
        /usr/lib/jvm/java-21-openjdk-*/lib/psfont.properties.ja:
        /usr/lib/jvm/java-21-openjdk-*/lib/psfontj2d.properties:
 
-+  # v2 of awt: the same files with a trimmed font stack, without glib's gio
-+  # and brotli's encoder, and without libatomic, which no awt library links.
++  # v2 of awt: the same files and functionality, with a smaller set of
++  # dependencies (no gio, brotli encoder or libexpatw, and no libatomic1_libs
++  # essential of its own, since no awt library links those).
 +  # use this instead of awt.
 +  awt-v2:
 +    essential:
-+      - libfontconfig1_fontconfig
-+      - libharfbuzz0b_harfbuzz
++      - libfontconfig1_libs-v2
++      - libharfbuzz0b_libs-v2
 +      - libjpeg8_libs
 +      - liblcms2-2_libs
 +      - openjdk-21-jre-headless_core
