@@ -123,22 +123,6 @@ diff --git a/slices/libharfbuzz0b.yaml b/slices/libharfbuzz0b.yaml
    copyright:
      contents:
        /usr/share/doc/libharfbuzz0b/copyright:
-diff --git a/slices/libnss3.yaml b/slices/libnss3.yaml
---- a/slices/libnss3.yaml
-+++ b/slices/libnss3.yaml
-@@ -52,10 +52,12 @@
-       /usr/lib/*-linux-*/libfreebl3.so:
-       /usr/lib/*-linux-*/libfreeblpriv3.so:
-
-+  # The softoken opens libfreeblpriv3.so at run time.
-   softokn:
-     essential:
-       - libc6_libs
-       - libnspr4_libs
-+      - libnss3_freebl
-       - libnss3_nss
-       - libsqlite3-0_libs
-     contents:
 diff --git a/slices/openjdk-21-jdk-headless.yaml b/slices/openjdk-21-jdk-headless.yaml
 --- a/slices/openjdk-21-jdk-headless.yaml
 +++ b/slices/openjdk-21-jdk-headless.yaml
@@ -178,15 +162,7 @@ diff --git a/slices/openjdk-21-jre-headless.yaml b/slices/openjdk-21-jre-headles
 
    # Native part of jdk.sctp. The JDK opens libsctp.so.1 at run time, so the
    # package does not depend on libsctp1.
-@@ -138,6 +142,7 @@
-   security:
-     essential:
-       - libnss3_nss
-+      - libnss3_softokn
-       - libpcsclite1_libs
-       - openjdk-21-jre-headless_core
-     contents:
-@@ -185,6 +190,7 @@
+@@ -186,6 +190,7 @@
        /usr/lib/jvm/java-21-openjdk-*/lib/jrt-fs.jar:
 
    # headless UI
@@ -194,7 +170,7 @@ diff --git a/slices/openjdk-21-jre-headless.yaml b/slices/openjdk-21-jre-headles
    awt:
      essential:
        - libatomic1_libs
-@@ -205,6 +211,29 @@
+@@ -206,6 +211,29 @@
        /usr/lib/jvm/java-21-openjdk-*/lib/psfont.properties.ja:
        /usr/lib/jvm/java-21-openjdk-*/lib/psfontj2d.properties:
 
