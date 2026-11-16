@@ -1,0 +1,6 @@
+summary: SCTP native library loads
+
+execute: |
+  javac --release 8 src/Sctp.java -d .
+  docker run --rm -v "$(pwd)":/app ${ROCK} exec java -cp /app Sctp \
+    | grep -qE '^(opened|loaded: )'

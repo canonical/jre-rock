@@ -1,0 +1,6 @@
+summary: Headless AWT font rendering
+
+execute: |
+  javac --release 8 src/AwtFont.java -d .
+  docker run --rm -v "$(pwd)":/app ${ROCK} exec java -Djava.awt.headless=true -cp /app AwtFont \
+    | grep -q rendered

@@ -1,0 +1,202 @@
+diff --git a/slices/libbrotli1.yaml b/slices/libbrotli1.yaml
+--- a/slices/libbrotli1.yaml
++++ b/slices/libbrotli1.yaml
+@@ -5,11 +5,29 @@
+
+ slices:
+   libs:
++    essential:
++      - libbrotli1_brotlicommon
++      - libbrotli1_brotlidec
++      - libbrotli1_brotlienc
++
++  brotlicommon:
+     essential:
+       - libc6_libs
+     contents:
+       /usr/lib/*-linux-*/libbrotlicommon.so.1*:
++
++  brotlidec:
++    essential:
++      - libbrotli1_brotlicommon
++      - libc6_libs
++    contents:
+       /usr/lib/*-linux-*/libbrotlidec.so.1*:
++
++  brotlienc:
++    essential:
++      - libbrotli1_brotlicommon
++      - libc6_libs
++    contents:
+       /usr/lib/*-linux-*/libbrotlienc.so.1*:
+
+   copyright:
+diff --git a/slices/libexpat1.yaml b/slices/libexpat1.yaml
+--- a/slices/libexpat1.yaml
++++ b/slices/libexpat1.yaml
+@@ -5,10 +5,24 @@
+
+ slices:
+   libs:
++    essential:
++      - libexpat1_expat
++      - libexpat1_expatw
++
++  expat:
+     essential:
+       - libc6_libs
++    v3-essential:
++      libgcc-s1_libs: {arch: [armhf]}
+     contents:
+       /usr/lib/*-linux-*/libexpat.so.1*:
++
++  expatw:
++    essential:
++      - libc6_libs
++    v3-essential:
++      libgcc-s1_libs: {arch: [armhf]}
++    contents:
+       /usr/lib/*-linux-*/libexpatw.so.1*:
+
+   copyright:
+diff --git a/slices/libfontconfig1.yaml b/slices/libfontconfig1.yaml
+--- a/slices/libfontconfig1.yaml
++++ b/slices/libfontconfig1.yaml
+@@ -13,6 +13,17 @@
+     contents:
+       /usr/lib/*-linux-*/libfontconfig.so.1*:
+
++  # v2 of libs: the same files, with only the essentials libfontconfig links.
++  # use this instead of libs.
++  libs-v2:
++    essential:
++      - fontconfig-config_config
++      - libc6_libs
++      - libexpat1_expat
++      - libfreetype6_libs-v2
++    contents:
++      /usr/lib/*-linux-*/libfontconfig.so.1*:
++
+   copyright:
+     contents:
+       /usr/share/doc/libfontconfig1/copyright:
+diff --git a/slices/libfreetype6.yaml b/slices/libfreetype6.yaml
+--- a/slices/libfreetype6.yaml
++++ b/slices/libfreetype6.yaml
+@@ -14,6 +14,18 @@
+     contents:
+       /usr/lib/*-linux-*/libfreetype.so.6*:
+
++  # v2 of libs: the same files, with only the essentials libfreetype links.
++  # use this instead of libs.
++  libs-v2:
++    essential:
++      - libbrotli1_brotlidec
++      - libbz2-1.0_libs
++      - libc6_libs
++      - libpng16-16t64_libs
++      - zlib1g_libs
++    contents:
++      /usr/lib/*-linux-*/libfreetype.so.6*:
++
+   copyright:
+     contents:
+       /usr/share/doc/libfreetype6/copyright:
+diff --git a/slices/libharfbuzz0b.yaml b/slices/libharfbuzz0b.yaml
+--- a/slices/libharfbuzz0b.yaml
++++ b/slices/libharfbuzz0b.yaml
+@@ -13,6 +13,17 @@
+     contents:
+       /usr/lib/*-linux-*/libharfbuzz.so.0*:
+
++  # v2 of libs: the same files, with only the essentials libharfbuzz links.
++  # use this instead of libs.
++  libs-v2:
++    essential:
++      - libc6_libs
++      - libfreetype6_libs-v2
++      - libglib2.0-0t64_core
++      - libgraphite2-3_libs
++    contents:
++      /usr/lib/*-linux-*/libharfbuzz.so.0*:
++
+   copyright:
+     contents:
+       /usr/share/doc/libharfbuzz0b/copyright:
+diff --git a/slices/openjdk-21-jdk-headless.yaml b/slices/openjdk-21-jdk-headless.yaml
+--- a/slices/openjdk-21-jdk-headless.yaml
++++ b/slices/openjdk-21-jdk-headless.yaml
+@@ -50,6 +50,15 @@
+       /usr/lib/jvm/java-21-openjdk-*/bin/jstatd:
+       /usr/lib/jvm/java-21-openjdk-*/bin/jwebserver:
+
++  # Launchers for tools whose modules are part of the runtime image
++  runtime-tools:
++    essential:
++      - openjdk-21-jre-headless_core
++    contents:
++      /usr/lib/jvm/java-21-openjdk-*/bin/jfr:
++      /usr/lib/jvm/java-21-openjdk-*/bin/jrunscript:
++      /usr/lib/jvm/java-21-openjdk-*/bin/jwebserver:
++
+   # OpenJDK modules required to build the runtime image
+   modules:
+     essential:
+diff --git a/slices/openjdk-21-jre-headless.yaml b/slices/openjdk-21-jre-headless.yaml
+--- a/slices/openjdk-21-jre-headless.yaml
++++ b/slices/openjdk-21-jre-headless.yaml
+@@ -66,12 +66,16 @@
+       /usr/lib/jvm/java-21-openjdk-*/lib/libnet.so:
+       # required for IO.
+       /usr/lib/jvm/java-21-openjdk-*/lib/libnio.so:
++      # default symbol lookup of the foreign function API
++      /usr/lib/jvm/java-21-openjdk-*/lib/libsyslookup.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/libverify.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/libzip.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/modules:
+       /usr/lib/jvm/java-21-openjdk-*/lib/server/libjsig.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/server/libjvm.so:
+       /usr/lib/jvm/java-21-openjdk-*/lib/tzdb.dat:
++      # describes the module image, e.g. MODULES=
++      /usr/lib/jvm/java-21-openjdk-*/release:
+
+   # Native part of jdk.sctp. The JDK opens libsctp.so.1 at run time, so the
+   # package does not depend on libsctp1.
+@@ -186,6 +190,7 @@
+       /usr/lib/jvm/java-21-openjdk-*/lib/jrt-fs.jar:
+
+   # headless UI
++  # superseded by awt-v2
+   awt:
+     essential:
+       - libatomic1_libs
+@@ -206,6 +211,29 @@
+       /usr/lib/jvm/java-21-openjdk-*/lib/psfont.properties.ja:
+       /usr/lib/jvm/java-21-openjdk-*/lib/psfontj2d.properties:
+
++  # v2 of awt: the same files and functionality, with a smaller set of
++  # dependencies (no gio, brotli encoder or libexpatw, and no libatomic1_libs
++  # essential of its own, since no awt library links those).
++  # use this instead of awt.
++  awt-v2:
++    essential:
++      - libfontconfig1_libs-v2
++      - libharfbuzz0b_libs-v2
++      - libjpeg8_libs
++      - liblcms2-2_libs
++      - openjdk-21-jre-headless_core
++    contents:
++      /etc/java-21-openjdk/psfont.properties.ja:
++      /etc/java-21-openjdk/psfontj2d.properties:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libawt.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libawt_headless.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libfontmanager.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libjavajpeg.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/liblcms.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/libmlib_image.so:
++      /usr/lib/jvm/java-21-openjdk-*/lib/psfont.properties.ja:
++      /usr/lib/jvm/java-21-openjdk-*/lib/psfontj2d.properties:
++
+   copyright:
+     contents:
+       /usr/share/doc/openjdk-21-jre-headless/copyright:
