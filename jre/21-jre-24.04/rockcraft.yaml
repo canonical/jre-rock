@@ -94,6 +94,8 @@ parts:
     source-depth: 1
     build-snaps:
       - chisel/latest/stable
+    build-packages:
+      - ca-certificates-java
     override-pull: |
       craftctl default
       # TODO: drop once these are merged into chisel-releases:
@@ -112,6 +114,7 @@ parts:
         base-files_base \
         base-files_chisel \
         base-files_release-info \
+        ca-certificates_data \
         openjdk-21-jre-headless_core \
         openjdk-21-jre-headless_awt-v2 \
         openjdk-21-jre-headless_console \
@@ -198,17 +201,28 @@ parts:
       install -m 0644 "${CRAFT_PART_BUILD}/jlink/lib/modules" "${CRAFT_PART_INSTALL}/${JAVA_HOME}/lib/modules"
       install -m 0644 "${CRAFT_PART_BUILD}/jlink/release" "${CRAFT_PART_INSTALL}/${JAVA_HOME}/release"
 
-      # lib/security/cacerts is a symlink to this keystore, as in the deb
-      KEYSTORE="${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts"
-      mkdir -p "$(dirname "${KEYSTORE}")"
-      rm -f "${KEYSTORE}"
-      for cert in "${BUILD_ROOT}"/usr/share/ca-certificates/mozilla/*.crt; do
-        name="$(basename "${cert}" .crt)"
-        # some certificate file names are not ascii
-        LC_ALL=C.UTF-8 "${BUILD_JAVA_HOME}/bin/keytool" -importcert -noprompt -storetype JKS \
-          -keystore "${KEYSTORE}" -storepass changeit \
-          -alias "debian:${name}.crt" -file "${cert}" >/dev/null
-      done
+      # lib/security/cacerts is a symlink to this keystore, as in the deb. built
+      # the way the ca-certificates-java postinst does it: update-ca-certificates
+      # picks the certs listed in ca-certificates.conf, the jar writes them out.
+      export LC_ALL=C.UTF-8
+      CERTS="${CRAFT_PART_BUILD}/certs"
+      rm -rf "${CERTS}"
+      mkdir -p "${CERTS}/etc" "${CERTS}/local" "${CERTS}/hooks" "${CERTS}/java"
+      update-ca-certificates --fresh \
+        --certsconf "${BUILD_ROOT}/etc/ca-certificates.conf" \
+        --certsdir "${BUILD_ROOT}/usr/share/ca-certificates" \
+        --localcertsdir "${CERTS}/local" \
+        --etccertsdir "${CERTS}/etc" \
+        --hooksdir "${CERTS}/hooks" >/dev/null
+      find "${CERTS}/etc" -type l -name '*.pem' -printf '+%p\n' \
+        | sort > "${CERTS}/certs.txt"
+      # the jar always writes /etc/ssl/certs/java/cacerts. bind an empty dir
+      # over it in a private mount namespace, so the host keystore is untouched.
+      unshare --mount --propagation private sh -c '
+        mount --bind "$1/java" /etc/ssl/certs/java &&
+        "$2/bin/java" -Xmx64m -jar /usr/share/ca-certificates-java/ca-certificates-java.jar <"$1/certs.txt"
+      ' sh "${CERTS}" "${BUILD_JAVA_HOME}" >/dev/null
+      install -D -m 0644 "${CERTS}/java/cacerts" "${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts"
 
       cd "${CRAFT_PART_INSTALL}"
       mkdir -p usr/bin
