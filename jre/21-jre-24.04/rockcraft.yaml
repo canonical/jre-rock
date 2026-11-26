@@ -97,13 +97,16 @@ parts:
       - zlib1g_libs
       - libpcsclite1_libs
       - libnss3_libs
-      - ca-certificates-java_data-with-certs
-    # exclude raw certificates from the final image
+      - ca-certificates_data
+
+  # build-only input for the keystore: the raw certificates and the conf.
+  # a separate cut, so they stay out of the image and out of manifest.wall.
+  cert-sources:
+    plugin: nil
+    stage-packages:
+      - ca-certificates_data-with-certs
     prime:
-      - -usr/share/ca-certificates
-    override-build: |
-      craftctl default
-      echo "" >> "${CRAFT_PART_INSTALL}/etc/ca-certificates.conf"
+      - -*
 
   runtime:
     plugin: nil
