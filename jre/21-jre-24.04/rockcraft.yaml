@@ -186,11 +186,16 @@ parts:
         --etccertsdir "${GEN_CERT_DIR}/etc/ssl/certs" \
         --hooksdir "${GEN_CERT_DIR}/hooks"
       find "${GEN_CERT_DIR}/etc/ssl/certs" -type l -name '*.pem' -printf '+%p\n' \
-        | sort \
-        | java -Xmx64m -jar /usr/share/ca-certificates-java/ca-certificates-java.jar
+        | sort > "${GEN_CERT_DIR}/certs.txt"
+      # the jar always writes /etc/ssl/certs/java/cacerts. bind an empty dir
+      # over it in a private mount namespace, so the host keystore is untouched.
+      unshare --mount --propagation private sh -c '
+        mount --bind "$1/java" /etc/ssl/certs/java &&
+        java -Xmx64m -jar /usr/share/ca-certificates-java/ca-certificates-java.jar <"$1/certs.txt"
+      ' sh "${GEN_CERT_DIR}"
 
       mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/
-      cp /etc/ssl/certs/java/cacerts ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts
+      cp "${GEN_CERT_DIR}/java/cacerts" ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts
       ln -sf --relative etc/ssl/certs/java/cacerts ${JAVA_HOME}/lib/security/cacerts
 
       craftctl default
