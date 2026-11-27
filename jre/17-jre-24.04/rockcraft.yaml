@@ -109,12 +109,26 @@ parts:
       - zlib1g_libs
       - libpcsclite1_libs
       - libnss3_libs
+      - ca-certificates_data
+
+  # build-only input for the keystore: the raw certificates and the conf.
+  # a separate cut, so they stay out of the image and out of manifest.wall.
+  cert-sources:
+    plugin: nil
+    stage-packages:
+      - ca-certificates_data-with-certs
+    prime:
+      - -*
 
   runtime:
     plugin: nil
+    after:
+      - dependencies
+      - cert-sources
     build-packages:
       - openjdk-17-jdk-headless
     override-build: |
+      export LC_ALL=C.UTF-8
       AMD_ARM_MODULES=java.base
       if [[ "$CRAFT_ARCH_BUILD_FOR" =~ ^(amd64|arm64)$ ]]; then
         AMD_ARM_MODULES=jdk.internal.vm.ci,jdk.internal.vm.compiler,jdk.internal.vm.compiler.management
@@ -177,6 +191,32 @@ parts:
       for tool in `ls ${CRAFT_PART_INSTALL}/${JAVA_HOME}/bin`; do
         ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
       done
+
+      # Remove the jlink image cacerts, it contains openjdk embedded certificates
+      rm -f ${CRAFT_PART_INSTALL}/${JAVA_HOME}/lib/security/cacerts
+      GEN_CERT_DIR="$(mktemp -d)"
+      trap 'rm -rf "${GEN_CERT_DIR}"' EXIT
+      mkdir -p "${GEN_CERT_DIR}/etc/ssl/certs" "${GEN_CERT_DIR}/local" "${GEN_CERT_DIR}/hooks" "${GEN_CERT_DIR}/java"
+      update-ca-certificates --fresh \
+        --certsconf "${CRAFT_STAGE}/etc/ca-certificates.conf" \
+        --certsdir "${CRAFT_STAGE}/usr/share/ca-certificates" \
+        --localcertsdir "${GEN_CERT_DIR}/local" \
+        --etccertsdir "${GEN_CERT_DIR}/etc/ssl/certs" \
+        --hooksdir "${GEN_CERT_DIR}/hooks"
+      find "${GEN_CERT_DIR}/etc/ssl/certs" -type l -name '*.pem' -printf '+%p\n' \
+        | sort > "${GEN_CERT_DIR}/certs.txt"
+      # the jar always writes /etc/ssl/certs/java/cacerts. bind an empty dir
+      # over it in a private mount namespace, so the host keystore is untouched.
+      unshare --mount --propagation private sh -c '
+        mount --bind "$1/java" /etc/ssl/certs/java &&
+        java -Xmx64m -jar /usr/share/ca-certificates-java/ca-certificates-java.jar <"$1/certs.txt"
+      ' sh "${GEN_CERT_DIR}"
+
+      mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/
+      cp "${GEN_CERT_DIR}/java/cacerts" ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts
+      ln -sf --relative etc/ssl/certs/java/cacerts ${JAVA_HOME}/lib/security/cacerts
+
+      craftctl default
 
   deb-security-manifest:
     plugin: make

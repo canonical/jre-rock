@@ -1,0 +1,12 @@
+summary: rock truststore holds exactly the system ca bundle
+
+execute: |
+  fingerprints() {
+    grep -oE 'SHA256: [0-9A-F:]+' | sort -u
+  }
+  bundle=$(docker run --rm --entrypoint keytool "${ROCK}" \
+    -printcert -file /etc/ssl/certs/ca-certificates.crt | fingerprints)
+  store=$(docker run --rm --entrypoint keytool "${ROCK}" \
+    -list -v -cacerts -storepass changeit | fingerprints)
+  test "$(echo "${bundle}" | wc -l)" -gt 100
+  diff -u <(echo "${bundle}") <(echo "${store}")
