@@ -112,6 +112,7 @@ parts:
     plugin: nil
     after:
       - dependencies
+      - cert-sources
     build-packages:
       - openjdk-21-jdk-headless
     override-build: |
