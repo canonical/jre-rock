@@ -169,7 +169,7 @@ parts:
       cd ${CRAFT_PART_INSTALL}
       mkdir -p usr/bin
       for tool in `ls ${CRAFT_PART_INSTALL}/${JAVA_HOME}/bin`; do
-        ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
+        ln -sf --relative ${JAVA_HOME}/bin/${tool} usr/bin/
       done
 
   deb-security-manifest:
