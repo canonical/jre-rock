@@ -105,8 +105,14 @@ parts:
       - zlib1g_libs
       - libpcsclite1_libs
       - libnss3_libs
-      - ca-certificates-java_data-with-certs
-    # exclude raw certificates from the final image
+      - ca-certificates_data
+
+  # build-only input for the keystore: the raw certificates and the conf.
+  # a separate cut, so they stay out of the image and out of manifest.wall.
+  cert-sources:
+    plugin: nil
+    stage-packages:
+      - ca-certificates_data-with-certs
     prime:
       - -usr/share/ca-certificates
     override-build: |
@@ -117,6 +123,7 @@ parts:
     plugin: nil
     after:
       - dependencies
+      - cert-sources
     build-packages:
       - openjdk-11-jdk-headless
     override-build: |
@@ -184,13 +191,9 @@ parts:
 
       # Remove the jlink image cacerts, it contains openjdk embedded certificates
       rm -f ${CRAFT_PART_INSTALL}/${JAVA_HOME}/lib/security/cacerts
-      # Remove host cacerts to ensure fresh generation
-      # As we do not need Java TLS on the host during the build,
-      # it`s fine to delete the certificate trust store
-      rm -f /etc/ssl/certs/java/cacerts
       GEN_CERT_DIR="$(mktemp -d)"
       trap 'rm -rf "${GEN_CERT_DIR}"' EXIT
-      mkdir -p "${GEN_CERT_DIR}/etc/ssl/certs" "${GEN_CERT_DIR}/local" "${GEN_CERT_DIR}/hooks"
+      mkdir -p "${GEN_CERT_DIR}/etc/ssl/certs" "${GEN_CERT_DIR}/local" "${GEN_CERT_DIR}/hooks" "${GEN_CERT_DIR}/java"
       update-ca-certificates --fresh \
         --certsconf "${CRAFT_STAGE}/etc/ca-certificates.conf" \
         --certsdir "${CRAFT_STAGE}/usr/share/ca-certificates" \
@@ -198,11 +201,16 @@ parts:
         --etccertsdir "${GEN_CERT_DIR}/etc/ssl/certs" \
         --hooksdir "${GEN_CERT_DIR}/hooks"
       find "${GEN_CERT_DIR}/etc/ssl/certs" -type l -name '*.pem' -printf '+%p\n' \
-        | sort \
-        | java -Xmx64m -jar /usr/share/ca-certificates-java/ca-certificates-java.jar
+        | sort > "${GEN_CERT_DIR}/certs.txt"
+      # the jar always writes /etc/ssl/certs/java/cacerts. bind an empty dir
+      # over it in a private mount namespace, so the host keystore is untouched.
+      unshare --mount --propagation private sh -c '
+        mount --bind "$1/java" /etc/ssl/certs/java &&
+        java -Xmx64m -jar /usr/share/ca-certificates-java/ca-certificates-java.jar <"$1/certs.txt"
+      ' sh "${GEN_CERT_DIR}"
 
       mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/
-      cp /etc/ssl/certs/java/cacerts ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts
+      cp "${GEN_CERT_DIR}/java/cacerts" ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts
       ln -sf --relative etc/ssl/certs/java/cacerts ${JAVA_HOME}/lib/security/cacerts
 
       craftctl default
