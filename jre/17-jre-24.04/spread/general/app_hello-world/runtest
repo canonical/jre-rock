@@ -6,4 +6,4 @@ echo "Running test for Java Hello World app"
 javac --release 8 src/HelloWorld.java -d .
 
 docker run --rm -v $PWD:/app:ro \
-    -w /app $BASE_IMAGE exec java -cp /app HelloWorld
+    -w /app $ROCK exec java -cp /app HelloWorld
