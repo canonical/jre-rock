@@ -78,6 +78,8 @@ description: |
     provider.
   - jdk.net - the JDK-specific Networking API.
   - jdk.nio.mapmode - the file mapping modes for java.nio.
+  - jdk.random - implementation of java.util.random.RandomGenerator
+    algorithms.
   - jdk.sctp - the JDK-specific API for SCTP.
   - jdk.security.auth - the implementations of the
     javax.security.auth.* interfaces and various authentication
