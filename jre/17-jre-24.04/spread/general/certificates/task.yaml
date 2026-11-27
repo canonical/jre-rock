@@ -1,24 +1,12 @@
-summary: Validate rock cacerts match ca-certificates.conf
+summary: rock truststore holds exactly the system ca bundle
 
 execute: |
-  export LC_ALL=C.UTF-8
-  container=$(docker create "${ROCK}")
-  workdir="$(mktemp -d)"
-  trap 'docker rm -f "${container}" ; rm -rf "${workdir}"' EXIT
-
-  # workaround snap permissions issue
-  docker cp "${container}:/etc/ssl/certs/java/cacerts" - | tar -xO > "${workdir}/cacerts"
-  docker cp "${container}:/etc/ca-certificates.conf" - | tar -xO > "${workdir}/ca-certificates.conf"
-
-  grep -v -e '^$' -e '^[#!]' "${workdir}/ca-certificates.conf" \
-    | sed -e 's|.*/||' -e 's/\.crt$//' -e 's/.*/debian:\L&.pem/' \
-    | sed -e 's/ /_/g' -e 's/[()]/=/g' -e 's/,/_/g' \
-    | sort > "${workdir}/expected_aliases.txt"
-
-  keytool -list -keystore "${workdir}/cacerts" -storepass changeit \
-    | grep ', trustedCertEntry,' \
-    | cut -d, -f1 \
-    | sort > "${workdir}/actual.txt"
-
-  test -s "${workdir}/expected_aliases.txt"
-  diff -u "${workdir}/expected_aliases.txt" "${workdir}/actual.txt"
+  fingerprints() {
+    grep -oE 'SHA256: [0-9A-F:]+' | sort -u
+  }
+  bundle=$(docker run --rm --entrypoint keytool "${ROCK}" \
+    -printcert -file /etc/ssl/certs/ca-certificates.crt | fingerprints)
+  store=$(docker run --rm --entrypoint keytool "${ROCK}" \
+    -list -v -cacerts -storepass changeit | fingerprints)
+  test "$(echo "${bundle}" | wc -l)" -gt 100
+  diff -u <(echo "${bundle}") <(echo "${store}")
