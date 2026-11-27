@@ -218,11 +218,10 @@ parts:
       jdk.zipfs --no-man-pages -G \
       --output ${CRAFT_PART_INSTALL}/${JAVA_HOME}
 
-
       cd ${CRAFT_PART_INSTALL}
       mkdir -p usr/bin
       for tool in `ls ${CRAFT_PART_INSTALL}/${JAVA_HOME}/bin`; do
-        ln -sf --relative ${JAVA_HOME}/bin/${tool} usr/bin/
+        ln -s --relative ${JAVA_HOME}/bin/${tool} usr/bin/
       done
 
       # Remove the jlink image cacerts, it contains openjdk embedded certificates
